@@ -1,0 +1,31 @@
+version: '3.3'
+
+networks:
+    redis-cluster-net:
+        external:
+            name: redis-cluster-net
+
+services:
+  database:
+    image: mysql:8.0.33
+    container_name: Mysql8
+    platform: linux/amd64
+    environment:
+      MYSQL_USER : 'user'
+      MYSQL_PASSWORD: 'tony0204'      
+      MYSQL_ROOT_USER: 'root'
+      MYSQL_ROOT_PASSWORD: 'tony0204'
+      SET_CONTAINER_TIMEZONE: 'true'
+      CONTAINER_TIMEZONE: 'Asia/Shanghai'      
+    ports:
+      - '13306:3306'
+    expose:
+      - '3306'
+    volumes:
+      - './db:/var/lib/mysql'
+      - './conf/my.cnf:/etc/my.cnf'
+      - './init:/docker-entrypoint-initdb.d'
+
+    networks:
+      redis-cluster-net:
+          ipv4_address: 192.168.200.205

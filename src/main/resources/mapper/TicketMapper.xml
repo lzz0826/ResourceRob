@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.example.lockproject.mapper.TicketMapper">
+
+  <resultMap id="BaseResultMap" type="org.example.lockproject.dao.TicketDAO">
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="ticketId" property="ticketId" jdbcType="VARCHAR" />
+    <result column="userId" property="userId" jdbcType="VARCHAR" />
+    <result column="area" property="area" jdbcType="VARCHAR" />
+    <result column="time" property="time" jdbcType="TIMESTAMP" />
+  </resultMap>
+
+
+
+
+</mapper>

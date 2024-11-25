@@ -1,0 +1,36 @@
+version: '3.1'
+services:
+  rabbitmq:
+    image: rabbitmq:management-alpine
+    container_name: rabbitmq
+    environment:
+      - RABBITMQ_DEFAULT_USER=twg
+      - RABBITMQ_DEFAULT_PASS=123456
+    restart: always
+    # chmod 400 /var/lib/rabbitmq/.erlang.cookie：更改 RabbitMQ 授權文件 .erlang.cookie 的權限為 400（只允許擁有者讀取），以確保安全性。
+    # rabbitmq-plugins enable rabbitmq_stomp：啟用 RabbitMQ 的 STOMP 插件。STOMP 插件讓 RabbitMQ 支持通過 STOMP 協議進行消息傳輸。
+    # rabbitmq-server：啟動 RabbitMQ 服務。
+    command: >
+      bash -c "chmod 400 /var/lib/rabbitmq/.erlang.cookie && 
+               rabbitmq-plugins enable rabbitmq_stomp &&
+               rabbitmq-server"
+    privileged: true #給資料卷賦許可權 避免啟動出現Permission denied
+    volumes:
+      - ./mqdata:/var/lib/rabbitmq #掛載 RabbitMQ資料
+      - ./log:/var/log/rabbitmq #掛載 RabbitMQ日誌
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+      - "61613:61613"  # Expose the STOMP port-
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "200k"
+        max-file: "10"
+    networks:
+      redis-cluster-net:
+        ipv4_address: 192.168.200.19
+networks:
+  redis-cluster-net:
+    external:
+      name: redis-cluster-net

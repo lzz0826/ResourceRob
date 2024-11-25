@@ -1,0 +1,48 @@
+
+核心問題 : 排除非必要請求到後段 , 解決同時大量請求
+
+----- 只有 Nginx: 爆在 JAVA HTTP ------
+解決: "搶到","沒搶到":只讓搶到的進到後端
+未解決: 同時大量 "搶到" 進到 JAVA 會爆
+
+初始化票
+http://localhost/init-ticket
+
+搶票
+http://localhost/book-ticket
+
+JAVA
+核對 Count
+http://localhost:8080/ticket/nginx/getCountTicket
+
+
+----- 只有 RabbitMq  ------
+解決: 同時大量進到 JAVA 後端 使用MQ 排隊
+未解決: "搶到","沒搶到" 同時進到 JAVA 後端
+http://localhost:8080/ticket/rabbitmq/setQa
+http://localhost:8080/ticket/rabbitmq/setQb
+
+http://localhost:8080/ticket/rabbitmq/bookTicketA
+http://localhost:8080/ticket/rabbitmq/bookTicketB
+
+
+
+------ Nginx + RabbitMq ------
+解決: "搶到","沒搶到" 同時進到 JAVA後端
+未解決: 同時大量消息 透過 STOMP 進到 MQ TimeOUt
+以解決: 使用 緩衝 在同一次 STOMP 連線處理多個 發送消息
+
+後端JAVA監聽MQ隊列 : 無論後端 java 起幾台 端口號多少都可以 (無狀態)
+
+http://localhost/initNginx-ticket?area=nginxQA&count=500
+http://localhost/initNginx-ticket?area=nginxQB&count=500
+
+curl -X POST http://172.24.10.37/bookNginx-ticket \
+  -H "Content-Type: application/json" \
+  -d '{"userId": "user001", "area": "nginxQA"}'
+
+--
+接收請求階段: 接收一個請求時，將write_point原子性自增1，將返回的, 已經更新過的write_point值作為存放當前request data的key, 存放到Share Dict中.
+Timer運行階段: Timer啟動后, 讀取write_point和read_point, 如果發現read_point<write_point, 開啟flush階段, 不斷自增read_point, 將新的read_point值作為key, 從Share Dict取出data, 發送到rabbitmq中, 直到read_point=write_point, 此次flush工作結束.
+
+
