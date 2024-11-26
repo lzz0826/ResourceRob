@@ -56,7 +56,7 @@ http://localhost:8080/ticket/nginx/getCountTicket
 ResourceRob/src/main/java/org/example/lockproject/test/TicketNginxBookingSystem.java
 
 ## N台後端服務 + Nginx + RabbitMQ：
-![image](https://github.com/lzz0826/ResourceRob/blob/main/imgs/002.jpg)
+![image](https://github.com/lzz0826/ResourceRob/blob/main/imgs/004.png)
 1. 在開始爭搶資源時,初始化資源(Nginx共享資源中存放 *注意原子性)
 2. 用戶請求到 Nginx , 由Nginx判斷是否還有資源,有:扣除資源到 RabbitMq ,無:返回用戶失敗
 3. RabbitMq 生產消息 , JAVA後端監聽消息
