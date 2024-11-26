@@ -15,7 +15,7 @@
 # 優化過程 & 方案選擇:
 
 ## N台後端服務 + RabbitMQ：
-![image](https://github.com/lzz0826/KafkaProject/blob/main/img/1.png)
+![image](https://github.com/lzz0826/ResourceRob/blob/main/imgs/002.jpg)
 1. 在開始爭搶資源時,初始化資源(透過JAVA後端API在 MQ隊列中存放 )
 2. 用戶請求到任意後端,收到請求的後端到 MQ 對列中看是否還存在該資源
 3. 有資源"消費"並持久化,沒資源返回用戶失敗
