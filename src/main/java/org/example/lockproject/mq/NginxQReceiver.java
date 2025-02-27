@@ -14,9 +14,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.Date;
 
-import static org.example.lockproject.mq.enums.NginxQueueEnums.NginxQA;
-import static org.example.lockproject.mq.enums.NginxQueueEnums.NginxQB;
-
 
 @Component
 @RabbitListener(queues = {"nginxQ","nginxQA", "nginxQB"})
@@ -69,11 +66,14 @@ public class NginxQReceiver {
 
   private TicketDAO builderTicket(NginxQueueReq nginxQueueReq){
       return TicketDAO.builder()
-            .ticketId(nginxQueueReq.getTicketId())
-            .userId(nginxQueueReq.getUserId())
-            .area(nginxQueueReq.getArea())
-            .time(new Date())
-            .build();
+              .ticketName(nginxQueueReq.getTicketName())
+              .userId(nginxQueueReq.getUserId())
+              .area(nginxQueueReq.getArea())
+              .bookTime(nginxQueueReq.getBookTime())
+              .ticketToken(nginxQueueReq.getTicketToken())
+              .updateTime(new Date())
+              .build();
+
   }
 
 }

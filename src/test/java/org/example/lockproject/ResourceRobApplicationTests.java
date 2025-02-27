@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.Date;
+import java.util.List;
 
 import static org.example.lockproject.enums.TicketBookingEnums.SOME_TICKET;
 
@@ -33,18 +34,26 @@ class ResourceRobApplicationTests {
     }
 
     @Test
+    public void gfg(){
+
+
+        List<TicketDAO> nginxQAByUserId = ticketMapper.findNginxQAByUserId("123");
+        System.out.println(nginxQAByUserId);
+
+    }
+
+    @Test
     public void testTicketDAO(){
 
         TicketDAO build = TicketDAO.builder()
-                .ticketId("1")
+                .ticketName("testName")
                 .userId("123")
                 .area("A")
-                .time(new Date())
+                .bookTime(new Date())
+                .ticketToken("testToken")
+                .updateTime(new Date())
                 .build();
-
         ticketMapper.insertNginxQAOne(build);
-
-
 
     }
 

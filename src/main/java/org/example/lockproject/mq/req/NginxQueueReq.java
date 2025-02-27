@@ -14,11 +14,15 @@ import java.util.Date;
 @NoArgsConstructor
 public class NginxQueueReq {
 
-    private String ticketId;
+    private String ticketName;
 
     private String userId;
 
     private String area;
 
-    private Date time;
+    private Date bookTime;
+
+    private String ticketToken;
+
+
 }

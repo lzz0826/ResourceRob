@@ -41,7 +41,7 @@ public class TicketNginxAndRabbitmqBookingSystem {
         ExecutorService executor = Executors.newFixedThreadPool(100);
 
         List<Future<NginxAndMqRep>> futures = new ArrayList<>();
-        for (int i = 0; i < 10000; i++) {
+        for (int i = 0; i < 2000; i++) {
             int finalI = i;
             Callable<NginxAndMqRep> callableTask = () -> {
                 try {

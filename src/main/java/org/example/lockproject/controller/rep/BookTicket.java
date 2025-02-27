@@ -6,11 +6,15 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
+
 @Builder
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class BookTicket {
+
+    private String ticketName;
 
     //UserId
     private String userId ;
@@ -21,7 +25,8 @@ public class BookTicket {
     //區域
     private String area;
 
+    private Date bookTime;
     //票ID
-    private Integer ticketId;
+    private String ticketToken;
 
 }

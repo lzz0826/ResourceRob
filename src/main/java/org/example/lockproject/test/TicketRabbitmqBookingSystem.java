@@ -77,7 +77,7 @@ public class TicketRabbitmqBookingSystem {
         Callable<BookTicket> callable = (()->{
             BookTicket bookTicket = setQueue(userId,queueName);
             if (bookTicket != null){
-                System.out.println(bookTicket.getArea()+":"+bookTicket.getTicketId());
+                System.out.println(bookTicket.getArea()+":"+bookTicket.getTicketToken());
                 return bookTicket;
             }
             return null;

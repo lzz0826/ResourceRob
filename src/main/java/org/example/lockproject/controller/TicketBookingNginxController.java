@@ -47,6 +47,8 @@ public class TicketBookingNginxController {
     //------ Nginx + RabbitMa STOMP ----------
 
     //鎖 和 資源(票) 做在Nginx 搶到票對MQ發消息 JAVA負責 監聽 紀錄 查詢
+
+//    TODO 驗證TOKEN
     @GetMapping("/checkoutTicket/{userId}")
     public BaseResp<List<BookTicket>> checkoutTicket(@PathVariable("userId")String userId) {
         List<BookTicket> reps = new ArrayList<>();
@@ -79,9 +81,11 @@ public class TicketBookingNginxController {
     private void addRep(List<TicketDAO> tickets,List<BookTicket> reps){
         for (TicketDAO ticketDAO : tickets) {
             BookTicket nginxQueueReq = BookTicket.builder()
-                    .ticketId(Integer.valueOf(ticketDAO.getTicketId()))
+                    .ticketName(ticketDAO.getTicketName())
                     .userId(ticketDAO.getUserId())
                     .area(ticketDAO.getArea())
+                    .bookTime(ticketDAO.getBookTime())
+                    .ticketToken(ticketDAO.getTicketToken())
                     .isGet(true)
                     .build();
             reps.add(nginxQueueReq);

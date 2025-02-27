@@ -12,12 +12,19 @@ public class TicketDAO {
 
   private Integer id;
 
-  private String ticketId;
+  private String ticketName;
 
   private String userId;
 
   private String area;
 
-  private Date time;
+  private Date bookTime;
+
+  private String ticketToken;
+
+  private Date createTime;
+
+  private Date updateTime;
+
 
 }

@@ -10,7 +10,7 @@ local function flush_timer()
     local write_point = queue:get("write_point") or 0
 
     if read_point < write_point then
-        -- 創建 RabbitMQ 連接
+        -- 創建 RabbitMQ 連接客戶端
         local conn, err = rabbitmq:new({
             username = "twg",
             password = "123456",
@@ -20,6 +20,7 @@ local function flush_timer()
             return
         end
 
+        -- 建立 RabbitMQ 連線
         local ok, err = conn:connect(host_ip, 61613)  -- 傳遞主機和端口作為參數
 
         if not ok then

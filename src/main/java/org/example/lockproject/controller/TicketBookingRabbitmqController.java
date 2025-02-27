@@ -77,7 +77,7 @@ public class TicketBookingRabbitmqController {
                 .userId(userId)
                 .isGet(true)
                 .area(ticketResource.getArea())
-                .ticketId(ticketResource.getId())
+//                .ticketId(ticketResource.getId())
                 .build();
         return BaseResp.ok(rep, StatusCode.Success);
     }

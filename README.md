@@ -72,14 +72,44 @@ ResourceRob/src/main/java/org/example/lockproject/test/TicketNginxBookingSystem.
 
 初始化票API: <br />
 http://localhost/initNginx-ticket?area=nginxQA&count=500 <br />
-http://localhost/initNginx-ticket?area=nginxQB&count=500
+http://localhost/initNginx-ticket?area=nginxQB&count=500  <br />
+
+添加票(以初始化好的票再添加)API: <br />
+http://localhost/addTicketNginx-ticket?area=nginxQA&addQuantity=100 <br />
 
 消費資源API Post: <br />
 curl -X POST http://172.24.10.37/bookNginx-ticket \
 -H "Content-Type: application/json" \
 -d '{"userId": "user001", "area": "nginxQA"}'
 
+curl -X POST http://172.24.10.161/bookNginx-ticket -H "Content-Type: application/json" -d '{"userId": "user001", "area": "nginxQA", "ticketName": "standard"}'
+
 接收請求階段: 接收一個請求時，將write_point原子性自增1，將返回的, 已經更新過的write_point值作為存放當前request data的key, 存放到Share Dict中.
 
 Timer運行階段: Timer啟動后, 讀取write_point和read_point, 如果發現read_point<write_point, 開啟flush階段, 不斷自增read_point, 將新的read_point值作為key, 從Share Dict取出data, 發送到rabbitmq中, 直到read_point=write_point, 此次flush工作結束.
 
+## 加密規則
+1. 簡介
+本文件定義了使用 HMAC-SHA256 進行數據簽名的加密規則，確保數據完整性與安全性。  <br />
+
+2. 數據格式
+數據格式 中間以_分隔  <br />
+data =  userId + ticket_name + area + book_time  <br />
+
+- userId：使用者 ID
+- ticket_name：票券名稱
+- area：座位區域
+- book_time：訂票時間，格式為 YYYY-MM-DD HH:mm:ss
+
+示例：123456_VIPTicket_A1_2025-02-25 12:34:56 <br />
+
+3. 加密方法
+使用 HMAC-SHA256 生成簽名，步驟如下：
+
+準備密鑰 secret_key（應妥善保管，不對外公開）。
+
+使用 HMAC-SHA256 對 <data> 進行簽名。
+
+簽名結果轉為十六進制字符串。
+
+4.簽名驗證
