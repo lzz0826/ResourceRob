@@ -38,5 +38,9 @@ mybatis:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl #开启SQL语句打印
 
+ticket:
+  signKey: your-testKey-key #簽名用私鑰Key
+
+
 
 

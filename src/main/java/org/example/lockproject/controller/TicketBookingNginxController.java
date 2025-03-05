@@ -2,18 +2,18 @@ package org.example.lockproject.controller;
 
 
 import jakarta.annotation.Resource;
+import jakarta.validation.Valid;
 import jodd.util.StringUtil;
 import org.example.lockproject.common.BaseResp;
 import org.example.lockproject.common.StatusCode;
 import org.example.lockproject.controller.rep.BookTicket;
+import org.example.lockproject.controller.rep.CheckoutTicketTokenRep;
+import org.example.lockproject.controller.req.CheckTicketTokenReq;
 import org.example.lockproject.dao.TicketDAO;
 import org.example.lockproject.mq.req.NginxQueueReq;
 import org.example.lockproject.service.TicketBookingNginxCacheService;
 import org.example.lockproject.service.TicketBookingNginxDbService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,25 +30,36 @@ public class TicketBookingNginxController {
     @Resource
     private TicketBookingNginxDbService ticketBookingNginxDbService;
 
-    //------ 只有 Nginx ----------
 
-    //鎖 和 資源(票) 做在Nginx JAVA只負責紀錄
-    @GetMapping("/bookTicket")
-    public BaseResp<Integer> bookTicket() {
-        return BaseResp.ok(ticketBookingNginxCacheService.addCountTicket(), StatusCode.Success);
-    }
-
-    @GetMapping("/getCountTicket")
-    public BaseResp<Integer> getCountTicket() {
-        return BaseResp.ok(ticketBookingNginxCacheService.getCountTicket(), StatusCode.Success);
-    }
 
 
     //------ Nginx + RabbitMa STOMP ----------
 
     //鎖 和 資源(票) 做在Nginx 搶到票對MQ發消息 JAVA負責 監聽 紀錄 查詢
 
-//    TODO 驗證TOKEN
+    //    TODO 驗證TOKEN  l sha256 ticketName_userId_area_book_time
+    @PostMapping("/checkoutTicketToken")
+    public BaseResp<CheckoutTicketTokenRep> checkoutTicketToken(@RequestBody @Valid CheckTicketTokenReq req) throws Exception {
+
+        String ticketName = req.getTicketName();
+        String userId = req.getUserId();
+        String area = req.getArea();
+        String bookTime = req.getBookTime();
+        String ticketToken = req.getTicketToken();
+
+
+        StatusCode statusCode = ticketBookingNginxDbService.ticketTokenProcess(ticketName, userId,area, bookTime, ticketToken);
+
+        CheckoutTicketTokenRep rep = CheckoutTicketTokenRep
+                .builder()
+                .ticketName(ticketName)
+                .userId(userId)
+                .ticketToken(ticketToken)
+                .massage(statusCode.msg)
+                .build();
+        return BaseResp.ok(rep, statusCode);
+    }
+
     @GetMapping("/checkoutTicket/{userId}")
     public BaseResp<List<BookTicket>> checkoutTicket(@PathVariable("userId")String userId) {
         List<BookTicket> reps = new ArrayList<>();
@@ -77,6 +88,22 @@ public class TicketBookingNginxController {
 
         return BaseResp.ok(reps, StatusCode.Success);
     }
+
+
+    //------ 只有 Nginx ----------
+
+    //鎖 和 資源(票) 做在Nginx JAVA只負責紀錄
+    @GetMapping("/bookTicket")
+    public BaseResp<Integer> bookTicket() {
+        return BaseResp.ok(ticketBookingNginxCacheService.addCountTicket(), StatusCode.Success);
+    }
+
+    @GetMapping("/getCountTicket")
+    public BaseResp<Integer> getCountTicket() {
+        return BaseResp.ok(ticketBookingNginxCacheService.getCountTicket(), StatusCode.Success);
+    }
+
+
 
     private void addRep(List<TicketDAO> tickets,List<BookTicket> reps){
         for (TicketDAO ticketDAO : tickets) {

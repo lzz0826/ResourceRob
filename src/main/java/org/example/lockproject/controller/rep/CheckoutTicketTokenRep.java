@@ -1,19 +1,22 @@
 package org.example.lockproject.controller.rep;
 
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import jakarta.validation.constraints.NotNull;
+import lombok.*;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class CheckoutTicketToken {
+@Builder
+public class CheckoutTicketTokenRep {
 
+    private String ticketName;
 
+    private String userId;
 
+    private String ticketToken;
 
+    private String massage;
 
 }

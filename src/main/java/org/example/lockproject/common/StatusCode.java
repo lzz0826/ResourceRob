@@ -25,8 +25,10 @@ public enum StatusCode {
 
   BindExceptionError(16,"數據綁定錯誤,參數型別錯誤"),
 
-
   QueuesError(17,"Mq對列錯誤"),
+
+  TicketTokenSignError(18,"簽名錯誤"),
+  TicketTokenTimeOutError(19,"TicketToken已過期"),
 
   ;
 

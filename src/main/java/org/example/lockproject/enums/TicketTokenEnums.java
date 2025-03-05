@@ -1,27 +1,12 @@
 package org.example.lockproject.enums;
 
-public enum TicketBookingEnums {
+public enum TicketTokenEnums {
 
-
-    SOME_TICKET("lockKey","SOME_TICKET_KEY",5000);
-
-    //用來做全局鎖
-    public final String lockKey;
-
-    //剩餘張數
-    public final String ticketKey;
+    TICKET_TOKEN(60L);
 
     //超時時間
-    public final int expireTime;
-    TicketBookingEnums(String lockKey , String ticketKey, int expireTime){
-        this.lockKey = lockKey;
-        this.ticketKey = ticketKey;
+    public final Long expireTime;
+    TicketTokenEnums(Long expireTime){
         this.expireTime = expireTime;
-
     }
-
-
-
-
-
-    }
+}

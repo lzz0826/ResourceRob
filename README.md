@@ -82,7 +82,7 @@ curl -X POST http://172.24.10.37/bookNginx-ticket \
 -H "Content-Type: application/json" \
 -d '{"userId": "user001", "area": "nginxQA"}'
 
-curl -X POST http://172.24.10.161/bookNginx-ticket -H "Content-Type: application/json" -d '{"userId": "user001", "area": "nginxQA", "ticketName": "standard"}'
+curl -X POST http://172.24.10.168/bookNginx-ticket -H "Content-Type: application/json" -d '{"userId": "user001", "area": "nginxQA", "ticketName": "standard"}'
 
 接收請求階段: 接收一個請求時，將write_point原子性自增1，將返回的, 已經更新過的write_point值作為存放當前request data的key, 存放到Share Dict中.
 

@@ -2,6 +2,9 @@ package org.example.lockproject.service;
 
 
 import jakarta.annotation.Resource;
+import lombok.extern.log4j.Log4j2;
+import org.apache.commons.lang3.StringUtils;
+import org.redisson.api.RedissonClient;
 import org.springframework.stereotype.Service;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
@@ -10,10 +13,30 @@ import redis.clients.jedis.params.SetParams;
 import static org.example.lockproject.enums.TicketBookingEnums.SOME_TICKET;
 
 @Service
+@Log4j2
 public class TicketBookingRedisService {
 
     @Resource
     private JedisPool jedisPool;
+
+    @Resource
+    private RedisService redisService;
+
+    //存TicketToken 過期後代表沒有付款
+    public void setTicketToken(String ticketToken,String userId, Long expireTime){
+        boolean set = redisService.set(ticketToken,userId,expireTime);
+        if(!set){
+            log.error("setTicketToken err {ticketToken: {} userID: {}}", ticketToken,userId);
+        }
+    }
+    //取的存TicketToken 緩存
+    public String getTicketToken(String ticketToken){
+        String ticket = (String) redisService.get(ticketToken);
+        if(StringUtils.isBlank(ticket)){
+            return "";
+        }
+        return ticket;
+    }
 
     public void setTicketKey(String ticketKey){
         Jedis jedis = jedisPool.getResource();
