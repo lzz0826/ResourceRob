@@ -14,32 +14,15 @@ import static org.example.lockproject.enums.TicketBookingEnums.SOME_TICKET;
 
 @SpringBootTest
 class ResourceRobApplicationTests {
-
-    @Resource
-    private TicketBookingRedisService ticketBookingService;
-
+    
     @Resource
     private TicketMapper ticketMapper;
 
 
     @Test
-    public void setTicketKey(){
-        ticketBookingService.setTicketKey(SOME_TICKET.ticketKey);
-    }
-
-
-    @Test
-    public void bookTicket(){
-        ticketBookingService.bookTicket(SOME_TICKET.lockKey);
-    }
-
-    @Test
-    public void gfg(){
-
-
+    public void testFindNginxQAByUserId(){
         List<TicketDAO> nginxQAByUserId = ticketMapper.findNginxQAByUserId("123");
         System.out.println(nginxQAByUserId);
-
     }
 
     @Test
