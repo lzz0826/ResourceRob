@@ -7,7 +7,6 @@ import org.example.lockproject.dao.TicketDAO;
 import org.example.lockproject.enums.TicketTokenEnums;
 import org.example.lockproject.mq.enums.NginxQueueEnums;
 import org.example.lockproject.mq.req.NginxQueueReq;
-import org.example.lockproject.service.TicketBookingNginxCacheService;
 import org.example.lockproject.service.TicketBookingNginxDbService;
 import org.example.lockproject.service.TicketBookingRedisService;
 import org.springframework.amqp.rabbit.annotation.RabbitHandler;
@@ -21,7 +20,8 @@ import java.util.Date;
 
 
 @Component
-@RabbitListener(queues = {"nginxQ","nginxQA", "nginxQB"})
+//ackMode = "MANUAL" 消費者手動確認模式
+@RabbitListener(queues = {"nginxQ","nginxQA", "nginxQB"},ackMode = "MANUAL")
 public class NginxQReceiver {
 
 
@@ -55,7 +55,12 @@ public class NginxQReceiver {
       }
 
       //TicketToken存入Redis過期代表沒有付款
-      ticketBookingRedisService.setTicketToken(nginxQueueReq.getTicketToken(),nginxQueueReq.getUserId(), TicketTokenEnums.TICKET_TOKEN.expireTime);
+      ticketBookingRedisService.setTicketTokenKey(
+              nginxQueueReq.getTicketToken(),
+              nginxQueueReq.getUserId(),
+              nginxQueueReq.getArea(),
+              TicketTokenEnums.TICKET_TOKEN.expireTime
+      );
 
       switch (parse) {
         case nginxQA:

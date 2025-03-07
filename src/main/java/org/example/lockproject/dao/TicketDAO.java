@@ -22,6 +22,8 @@ public class TicketDAO {
 
   private String ticketToken;
 
+  private int ticketType;
+
   private Date createTime;
 
   private Date updateTime;

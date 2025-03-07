@@ -10,7 +10,7 @@ local function flush_timer()
     local write_point = queue:get("write_point") or 0
 
     if read_point < write_point then
-        -- 創建 RabbitMQ 連接客戶端
+        -- 創建 RabbitMQ 連接
         local conn, err = rabbitmq:new({
             username = "twg",
             password = "123456",
@@ -20,7 +20,6 @@ local function flush_timer()
             return
         end
 
-        -- 建立 RabbitMQ 連線
         local ok, err = conn:connect(host_ip, 61613)  -- 傳遞主機和端口作為參數
 
         if not ok then
@@ -30,7 +29,10 @@ local function flush_timer()
 
         -- 構建發送消息的標頭（headers），指定消息的目的地和內容類型
         local headers = {
-            destination = "/queue/nginxQ",
+            -- 指定隊列/隊列名
+            -- destination = "/queue/nginxQ",
+            -- 指定交換機/交換機名/routing-key
+            destination = "/exchange/ticketExchange/ticket-key",
             -- ["content-type"] = "text/plain" -- 設置消息的內容類型為純文本
             ["content-type"] = "application/json" --設置消息的內容類型為JSON
         }
@@ -51,6 +53,8 @@ local function flush_timer()
                 queue:delete(i) -- 清理已處理的數據
             end
         end
+        -- 關閉連線
+        conn:close()
     end
 
     -- 註冊下一次定時任務

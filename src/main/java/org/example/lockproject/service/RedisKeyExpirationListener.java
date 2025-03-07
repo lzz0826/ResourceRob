@@ -2,15 +2,22 @@ package org.example.lockproject.service;
 
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
+import org.example.lockproject.enums.TicketType;
+import org.example.lockproject.mq.enums.NginxQueueEnums;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.connection.Message;
 import org.springframework.data.redis.listener.KeyExpirationEventMessageListener;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.stereotype.Component;
 
+import static org.example.lockproject.service.TicketBookingRedisService.*;
+
 @Slf4j
 @Component
 public class RedisKeyExpirationListener extends KeyExpirationEventMessageListener {
+
+    @Resource
+    private TicketBookingNginxDbService ticketBookingNginxDbService;
 
     public RedisKeyExpirationListener(RedisMessageListenerContainer listenerContainer) {
         super(listenerContainer);
@@ -28,9 +35,19 @@ public class RedisKeyExpirationListener extends KeyExpirationEventMessageListene
         String expiredKey = message.toString();
         log.info("onMessage --> redis 過期的key是：{}", expiredKey);
         try {
-            // TODO 對過期key進行處理
+
+            //存TicketToken 過期後代表沒有付款 key = ticketToken_userID_area_area
+            String token = GetTicketTokenKeyToken(expiredKey);
+            String userId = GetTicketTokenKeyUserId(expiredKey);
+            String area = GetTicketTokenKeyArea(expiredKey);
+
+            NginxQueueEnums parse = NginxQueueEnums.parse(area);
+
+            boolean b = ticketBookingNginxDbService.updateNginxTicketType(token, TicketType.TICKET_NOT_PAY, area);
 
             System.out.println("key:" + expiredKey);
+
+
             log.info("過期key處理完成：{}", expiredKey);
         } catch (Exception e) {
             e.printStackTrace();

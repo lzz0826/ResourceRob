@@ -2,6 +2,8 @@ package org.example.lockproject;
 
 
 import jakarta.annotation.Resource;
+import org.example.lockproject.enums.TicketType;
+import org.example.lockproject.service.TicketBookingNginxDbService;
 import org.example.lockproject.service.TicketBookingRedisService;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -15,15 +17,26 @@ public class TicketTokenTest {
     @Resource
     private TicketBookingRedisService ticketBookingRedisService;
 
+    @Resource
+    private TicketBookingNginxDbService ticketBookingNginxDbService;
+
+
+
+    @Test
+    public void updateTicketTypeTest(){
+        boolean b = ticketBookingNginxDbService.updateNginxQATicketType("as", TicketType.TICKET_END);
+        System.out.println(b);
+    }
+
     @Test
     public void setTicketTokenTest(){
-        ticketBookingRedisService.setTicketToken("testToken","testUserId",30L);
+        ticketBookingRedisService.setTicketTokenKey("testToken","testUserId","QA",30L);
     }
 
     @Test
     public void getTicketTokenTest(){
 //        public void setTicketToken(String ticketToken,String userId, Long expireTime){
-        String testToken = ticketBookingRedisService.getTicketToken("testToken");
+        String testToken = ticketBookingRedisService.GetTicketTokenValue("testToken","user","area");
         System.out.println(testToken);
     }
 

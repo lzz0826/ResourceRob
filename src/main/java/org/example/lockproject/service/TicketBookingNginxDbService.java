@@ -2,22 +2,30 @@ package org.example.lockproject.service;
 
 
 import jakarta.annotation.Resource;
+import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.StringUtils;
 import org.example.lockproject.common.StatusCode;
 import org.example.lockproject.dao.TicketDAO;
+import org.example.lockproject.enums.TicketType;
 import org.example.lockproject.mapper.TicketMapper;
+import org.example.lockproject.mq.enums.NginxQueueEnums;
 import org.example.lockproject.utils.HMACSHA256Util;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+import static org.example.lockproject.mq.enums.NginxQueueEnums.nginxQA;
+import static org.example.lockproject.mq.enums.NginxQueueEnums.nginxQB;
+
 
 @Service
+@Log4j2
 public class TicketBookingNginxDbService {
 
     @Resource
     private TicketMapper ticketMapper;
+
 
     @Resource
     private RedisService redisService;
@@ -31,13 +39,14 @@ public class TicketBookingNginxDbService {
 
     public StatusCode ticketTokenProcess(String ticketName ,String userId,String area ,String bookTime,String ticketToken) throws Exception {
 
-        String ticketTokenRedis = ticketBookingRedisService.getTicketToken(ticketToken);
+        String token = ticketBookingRedisService.GetTicketTokenValue(ticketToken,userId,area);
 
-        if(StringUtils.isBlank(ticketTokenRedis)){
+        if(StringUtils.isBlank(token)){
             return StatusCode.TicketTokenTimeOutError;
         }
+
         //驗證簽名
-        if(!ticketTokenSign(ticketName,userId,area ,bookTime,ticketToken)){
+        if(!ticketTokenSign(ticketName,userId,area ,bookTime,token)){
             return StatusCode.TicketTokenSignError;
         }
         return StatusCode.Success;
@@ -66,6 +75,40 @@ public class TicketBookingNginxDbService {
     public List<TicketDAO> selectQBTicketByUserId(String userID){
         return ticketMapper.findNginxQBByUserId(userID);
     }
+
+    public boolean updateNginxTicketType(String ticketToken , TicketType ticketType, String area){
+        NginxQueueEnums parse = NginxQueueEnums.parse(area);
+        switch (parse) {
+            case nginxQA:
+                return updateNginxQATicketType(ticketToken,ticketType);
+            case nginxQB:
+                return updateNginxQBTicketType(ticketToken,ticketType);
+        }
+        log.error("updateNginxTicketType 沒有該區域 area:"+ area);
+        return false;
+    }
+
+
+    public boolean updateNginxQATicketType(String ticketToken ,TicketType ticketType){
+        int i = ticketMapper.updateNginxQATicketType(ticketToken, ticketType.tpye);
+        if(i != 1){
+            log.error("updateTicketType更新異常");
+            return false;
+        }
+        System.out.println("更新行數:"+i);
+        return true;
+    }
+
+    public boolean updateNginxQBTicketType(String ticketToken ,TicketType ticketType){
+        int i = ticketMapper.updateNginxQBTicketType(ticketToken, ticketType.tpye);
+        if(i != 1){
+            log.error("updateTicketType更新異常");
+            return false;
+        }
+        System.out.println("更新行數:"+i);
+        return true;
+    }
+
 
 
 

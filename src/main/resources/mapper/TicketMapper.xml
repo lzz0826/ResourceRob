@@ -11,6 +11,7 @@
     <result column="area" property="area" jdbcType="VARCHAR" />
     <result column="book_time" property="bookTime" jdbcType="VARCHAR" />
     <result column="ticket_token" property="ticketToken" jdbcType="VARCHAR" />
+    <result column="ticket_type" property="ticketType" jdbcType="INTEGER" />
     <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
     <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
   </resultMap>

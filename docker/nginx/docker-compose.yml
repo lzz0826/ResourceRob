@@ -11,6 +11,7 @@ services:
 
 
 
+
        networks:
         - redis-cluster-net
        ports:

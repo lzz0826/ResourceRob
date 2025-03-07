@@ -15,7 +15,7 @@ public enum NginxQueueEnums {
     nginxQA(),
 
 
-    //區域A
+    //區域B
     nginxQB();
 
 
