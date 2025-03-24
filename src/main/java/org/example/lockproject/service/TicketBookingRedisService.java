@@ -22,7 +22,7 @@ public class TicketBookingRedisService {
     private RedisService redisService;
 
 
-    //存TicketToken 過期後代表沒有付款 key = ticketToken_userID_area_area
+    //存TicketToken 過期後代表沒有付款 key = ticketToken_userID_area
     public void setTicketTokenKey(String ticketToken, String userId, String area, Long expireTime){
         boolean set = redisService.set(ticketTokenKeyCreat(ticketToken,userId,area),ticketToken,expireTime);
         if(!set){
@@ -30,7 +30,7 @@ public class TicketBookingRedisService {
         }
     }
 
-    //取的存TicketToken 緩存 key = ticketToken_userID_area
+    //取得存TicketToken 緩存 key = ticketToken_userID_area
     //反回 取的存TicketToken
     public String GetTicketTokenValue(String ticketToken, String userId, String area){
         String ticketTokenValue = (String) redisService.get(ticketTokenKeyCreat(ticketToken,userId,area));

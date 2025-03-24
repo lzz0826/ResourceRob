@@ -2,7 +2,10 @@ package org.example.lockproject;
 
 import jakarta.annotation.Resource;
 import org.example.lockproject.dao.TicketDAO;
+import org.example.lockproject.enums.TicketDBTableEnums;
+import org.example.lockproject.exception.SomeException;
 import org.example.lockproject.mapper.TicketMapper;
+import org.example.lockproject.service.TicketBookingNginxDbService;
 import org.example.lockproject.utils.SerializableUtil;
 import org.example.lockproject.serializable.TicketRedisInfoSerializable;
 import org.junit.jupiter.api.Test;
@@ -12,11 +15,19 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
+import static org.example.lockproject.conf.RabbitMqConfig.QUEUEA_NAME;
+import static org.example.lockproject.conf.RabbitMqConfig.QUEUEB_NAME;
+
 @SpringBootTest
 class ResourceRobTests {
 
     @Resource
     private TicketMapper ticketMapper;
+
+    @Resource
+    private TicketBookingNginxDbService ticketBookingNginxDbService;
+
+
 
 
     @Test
@@ -28,9 +39,7 @@ class ResourceRobTests {
 //        for (int i = 0; i < serialize.length; i++){
 //            System.out.println(serialize[i]);
 //        }
-
         TicketRedisInfoSerializable deserialize = (TicketRedisInfoSerializable) SerializableUtil.deserialize(serialize);
-
 //        System.out.println(deserialize);
     }
 
@@ -57,6 +66,18 @@ class ResourceRobTests {
         ticketMapper.insertNginxQAOne(build);
 
     }
+
+    @Test
+    public void testSelectTicketTypeByToken(){
+        int i = ticketBookingNginxDbService.selectTicketTypeByToken(TicketDBTableEnums.NGINX_QA,"as");
+        System.out.println(i);
+    }
+
+//    @Test
+//    public void testUpdateTicketType(){
+//        int i = ticketBookingNginxDbService.updateTicketType(TicketDBTableEnums.NGINX_QA,"afs",2);
+//        System.out.println(i);
+//    }
 
 
 }

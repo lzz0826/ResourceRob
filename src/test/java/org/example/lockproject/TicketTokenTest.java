@@ -21,13 +21,6 @@ public class TicketTokenTest {
     private TicketBookingNginxDbService ticketBookingNginxDbService;
 
 
-
-    @Test
-    public void updateTicketTypeTest(){
-        boolean b = ticketBookingNginxDbService.updateNginxQATicketType("as", TicketType.TICKET_END);
-        System.out.println(b);
-    }
-
     @Test
     public void setTicketTokenTest(){
         ticketBookingRedisService.setTicketTokenKey("testToken","testUserId","QA",30L);
