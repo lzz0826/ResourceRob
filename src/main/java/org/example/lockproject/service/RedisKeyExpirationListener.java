@@ -36,12 +36,16 @@ public class RedisKeyExpirationListener extends KeyExpirationEventMessageListene
         log.info("onMessage --> redis 過期的key是：{}", expiredKey);
         try {
 
-            //存TicketToken 過期後代表沒有付款 key = ticketToken_userID_area_area
+            //存TicketToken 過期後代表沒有付款 key = ticketToken_userID_area
             String token = GetTicketTokenKeyToken(expiredKey);
             String userId = GetTicketTokenKeyUserId(expiredKey);
             String area = GetTicketTokenKeyArea(expiredKey);
 
             NginxQueueEnums parse = NginxQueueEnums.parse(area);
+
+            //TODO 查DB 確認狀態後 確認是否已付款
+
+//            ticketBookingNginxDbService.
 
             boolean b = ticketBookingNginxDbService.updateNginxTicketType(token, TicketType.TICKET_NOT_PAY, area);
 

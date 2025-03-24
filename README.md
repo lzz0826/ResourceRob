@@ -94,14 +94,14 @@ Timer運行階段: Timer啟動后, 讀取write_point和read_point, 如果發現r
 
 2. 數據格式
 數據格式 中間以_分隔  <br />
-data =  userId + ticket_name + area + book_time  <br />
+data =  ticketName + userId + area + book_time  <br />
 
-- userId：使用者 ID
 - ticket_name：票券名稱
+- userId：使用者 ID
 - area：座位區域
-- book_time：訂票時間，格式為 YYYY-MM-DD HH:mm:ss
+- book_time：訂票時間，格式為 1742800901
 
-示例：123456_VIPTicket_A1_2025-02-25 12:34:56 <br />
+示例：standard_user001_nginxQA_1742800901 <br />
 
 3. 加密方法
 使用 HMAC-SHA256 生成簽名，步驟如下：
@@ -113,3 +113,8 @@ data =  userId + ticket_name + area + book_time  <br />
 簽名結果轉為十六進制字符串。
 
 4.簽名驗證
+
+
+------------------
+開票 -> 搶到 Redis 存(過期相當於付款時間) -> 到期 -> 檢查(DB 狀態) -> 有付 -> 不變  
+                                                            -> 沒付 -> 改DB狀態 -> 放回Nginx 

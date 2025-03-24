@@ -6,6 +6,7 @@ import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.StringUtils;
 import org.example.lockproject.common.StatusCode;
 import org.example.lockproject.dao.TicketDAO;
+import org.example.lockproject.enums.TicketDBTableEnums;
 import org.example.lockproject.enums.TicketType;
 import org.example.lockproject.mapper.TicketMapper;
 import org.example.lockproject.mq.enums.NginxQueueEnums;
@@ -14,9 +15,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-
-import static org.example.lockproject.mq.enums.NginxQueueEnums.nginxQA;
-import static org.example.lockproject.mq.enums.NginxQueueEnums.nginxQB;
 
 
 @Service
@@ -76,41 +74,36 @@ public class TicketBookingNginxDbService {
         return ticketMapper.findNginxQBByUserId(userID);
     }
 
+    public int selectTicketTypeByToken(TicketDBTableEnums tableName , String token){
+        int type = 0;
+        try {
+            type = ticketMapper.findNginxQATicketTypeByToken(tableName.getName(),token);
+        }catch (Exception e){
+            log.error("selectNginxQATicketTypeByToken err {token: {}}", token);
+        }
+        return type;
+    }
+
+
+    public boolean updateTicketType(TicketDBTableEnums tableName , String ticketToken , TicketType ticketType){
+        int i = ticketMapper.updateTicketType(tableName.getName(), ticketToken, ticketType.tpye);
+        if(i != 1){
+            log.error("updateTicketType更新異常");
+            return false;
+        }
+        System.out.println("更新行數:"+i);
+        return true;
+    }
+
     public boolean updateNginxTicketType(String ticketToken , TicketType ticketType, String area){
         NginxQueueEnums parse = NginxQueueEnums.parse(area);
         switch (parse) {
             case nginxQA:
-                return updateNginxQATicketType(ticketToken,ticketType);
+                return updateTicketType(TicketDBTableEnums.NGINX_QA,ticketToken,ticketType);
             case nginxQB:
-                return updateNginxQBTicketType(ticketToken,ticketType);
+                return updateTicketType(TicketDBTableEnums.NGINX_QB,ticketToken,ticketType);
         }
         log.error("updateNginxTicketType 沒有該區域 area:"+ area);
         return false;
     }
-
-
-    public boolean updateNginxQATicketType(String ticketToken ,TicketType ticketType){
-        int i = ticketMapper.updateNginxQATicketType(ticketToken, ticketType.tpye);
-        if(i != 1){
-            log.error("updateTicketType更新異常");
-            return false;
-        }
-        System.out.println("更新行數:"+i);
-        return true;
-    }
-
-    public boolean updateNginxQBTicketType(String ticketToken ,TicketType ticketType){
-        int i = ticketMapper.updateNginxQBTicketType(ticketToken, ticketType.tpye);
-        if(i != 1){
-            log.error("updateTicketType更新異常");
-            return false;
-        }
-        System.out.println("更新行數:"+i);
-        return true;
-    }
-
-
-
-
-
 }
