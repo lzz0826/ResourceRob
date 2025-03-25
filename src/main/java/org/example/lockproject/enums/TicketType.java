@@ -1,5 +1,7 @@
 package org.example.lockproject.enums;
 
+import org.apache.commons.lang3.StringUtils;
+
 public enum TicketType {
 
     TICKET_CREATE(0),
@@ -17,6 +19,13 @@ public enum TicketType {
     }
 
 
-
+    public static TicketType parse(int type) {
+        for (TicketType info : values()) {
+            if (info.tpye == type) {
+                return info;
+            }
+        }
+        return null;
+    }
 }
 

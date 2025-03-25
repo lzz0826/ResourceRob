@@ -21,8 +21,6 @@ import static org.example.lockproject.conf.RabbitMqConfig.QUEUEB_NAME;
 @SpringBootTest
 class ResourceRobTests {
 
-    @Resource
-    private TicketMapper ticketMapper;
 
     @Resource
     private TicketBookingNginxDbService ticketBookingNginxDbService;
@@ -43,29 +41,22 @@ class ResourceRobTests {
 //        System.out.println(deserialize);
     }
 
-
-
-
     @Test
-    public void testFindNginxQAByUserId(){
-        List<TicketDAO> nginxQAByUserId = ticketMapper.findNginxQAByUserId("123");
-        System.out.println(nginxQAByUserId);
-    }
-
-    @Test
-    public void testTicketDAO(){
-
-        TicketDAO build = TicketDAO.builder()
-                .ticketName("testName")
-                .userId("123")
-                .area("A")
+    public void testInsertTicket(){
+        TicketDAO build = TicketDAO
+                .builder()
+                .ticketName("fff")
+                .userId("userId")
+                .area("a")
                 .bookTime(new Date())
-                .ticketToken("testToken")
+                .ticketToken("tbrtb")
+                .ticketType(1)
                 .updateTime(new Date())
                 .build();
-        ticketMapper.insertNginxQAOne(build);
 
+        ticketBookingNginxDbService.insertTicket(TicketDBTableEnums.NGINX_QA,build);
     }
+
 
     @Test
     public void testSelectTicketTypeByToken(){

@@ -4,7 +4,9 @@ import com.alibaba.fastjson.JSON;
 import jakarta.annotation.Resource;
 import jodd.util.StringUtil;
 import org.example.lockproject.dao.TicketDAO;
+import org.example.lockproject.enums.TicketDBTableEnums;
 import org.example.lockproject.enums.TicketTokenEnums;
+import org.example.lockproject.enums.TicketType;
 import org.example.lockproject.mq.enums.NginxQueueEnums;
 import org.example.lockproject.mq.req.NginxQueueReq;
 import org.example.lockproject.service.TicketBookingNginxDbService;
@@ -67,13 +69,14 @@ public class NginxQReceiver {
           System.out.println("Set NginxQA");
 //        ticketBookingNginxCacheService.setTicketQAMap(nginxQueueReq.getUserId(),nginxQueueReq);
           TicketDAO ta = builderTicket(nginxQueueReq);
-          ticketBookingNginxDbService.insertQATicket(ta);
+
+          ticketBookingNginxDbService.insertTicket(TicketDBTableEnums.NGINX_QA,ta);
           break;
         case nginxQB:
           System.out.println("Set NginxQB");
 //        ticketBookingNginxCacheService.setTicketQBMap(nginxQueueReq.getUserId(),nginxQueueReq);
           TicketDAO tb = builderTicket(nginxQueueReq);
-          ticketBookingNginxDbService.insertQBTicket(tb);
+          ticketBookingNginxDbService.insertTicket(TicketDBTableEnums.NGINX_QB,tb);
           break;
         default:
           System.out.println("沒有對應區域");
@@ -103,6 +106,7 @@ public class NginxQReceiver {
               .area(nginxQueueReq.getArea())
               .bookTime(nginxQueueReq.getBookTime())
               .ticketToken(nginxQueueReq.getTicketToken())
+              .ticketType(TicketType.TICKET_PAYING.tpye)
               .updateTime(new Date())
               .build();
   }

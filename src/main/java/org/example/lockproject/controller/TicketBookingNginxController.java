@@ -10,7 +10,7 @@ import org.example.lockproject.controller.rep.BookTicket;
 import org.example.lockproject.controller.rep.CheckoutTicketTokenRep;
 import org.example.lockproject.controller.req.CheckTicketTokenReq;
 import org.example.lockproject.dao.TicketDAO;
-import org.example.lockproject.mq.req.NginxQueueReq;
+import org.example.lockproject.enums.TicketDBTableEnums;
 import org.example.lockproject.service.TicketBookingNginxCacheService;
 import org.example.lockproject.service.TicketBookingNginxDbService;
 import org.springframework.web.bind.annotation.*;
@@ -29,15 +29,11 @@ public class TicketBookingNginxController {
 
     @Resource
     private TicketBookingNginxDbService ticketBookingNginxDbService;
-
-
-
-
     //------ Nginx + RabbitMa STOMP ----------
-
     //鎖 和 資源(票) 做在Nginx 搶到票對MQ發消息 JAVA負責 監聽 紀錄 查詢
 
-    //    TODO 驗證TOKEN  l sha256 ticketName_userId_area_book_time
+
+    //檢查TicketToken是否過期
     @PostMapping("/checkoutTicketToken")
     public BaseResp<CheckoutTicketTokenRep> checkoutTicketToken(@RequestBody @Valid CheckTicketTokenReq req) throws Exception {
 
@@ -48,7 +44,7 @@ public class TicketBookingNginxController {
         String ticketToken = req.getTicketToken();
 
 
-        StatusCode statusCode = ticketBookingNginxDbService.ticketTokenProcess(ticketName, userId,area, bookTime, ticketToken);
+        StatusCode statusCode = ticketBookingNginxDbService.ticketTokenVerify(ticketName, userId,area, bookTime, ticketToken);
 
         CheckoutTicketTokenRep rep = CheckoutTicketTokenRep
                 .builder()
@@ -67,12 +63,12 @@ public class TicketBookingNginxController {
             return BaseResp.fail(reps, StatusCode.Success);
         }
 
-        List<TicketDAO> ticketDAOS = ticketBookingNginxDbService.selectQATicketByUserId(userId);
+        List<TicketDAO> ticketDAOS = ticketBookingNginxDbService.selectTicketByUserId(TicketDBTableEnums.NGINX_QA,userId);
         if(ticketDAOS != null){
             addRep(ticketDAOS,reps);
         }
 
-        List<TicketDAO> ticketDBOS = ticketBookingNginxDbService.selectQBTicketByUserId(userId);
+        List<TicketDAO> ticketDBOS = ticketBookingNginxDbService.selectTicketByUserId(TicketDBTableEnums.NGINX_QB,userId);
         if(ticketDBOS != null){
             addRep(ticketDBOS,reps);
         }
