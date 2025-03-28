@@ -2,6 +2,7 @@ package org.example.lockproject.service;
 
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
+import org.example.lockproject.client.service.ClientService;
 import org.example.lockproject.enums.TicketDBTableEnums;
 import org.example.lockproject.enums.TicketType;
 import org.example.lockproject.mq.enums.NginxQueueEnums;
@@ -19,6 +20,10 @@ public class RedisKeyExpirationListener extends KeyExpirationEventMessageListene
 
     @Resource
     private TicketBookingNginxDbService ticketBookingNginxDbService;
+
+
+    @Resource
+    private ClientService clientService;
 
     public RedisKeyExpirationListener(RedisMessageListenerContainer listenerContainer) {
         super(listenerContainer);
@@ -48,10 +53,18 @@ public class RedisKeyExpirationListener extends KeyExpirationEventMessageListene
             }
             switch (nginxQueueEnums) {
                 case nginxQA:
-                    ticketBookingNginxDbService.checkAndUpdateTicketType(TicketDBTableEnums.NGINX_QA,TicketType.TICKET_PAYING,TicketType.TICKET_NOT_PAY ,token);
+                    boolean updateA = ticketBookingNginxDbService.checkAndUpdateTicketType(TicketDBTableEnums.NGINX_QA, TicketType.TICKET_PAYING, TicketType.TICKET_NOT_PAY, token);
+                    //確定狀態 TICKET_PAYING -> TICKET_NOT_PAY 後補票API
+                    if(updateA){
+                        clientService.addQuantityReq(NginxQueueEnums.nginxQA.name(),1);
+                    }
                     break;
                 case nginxQB:
-                    ticketBookingNginxDbService.checkAndUpdateTicketType(TicketDBTableEnums.NGINX_QB,TicketType.TICKET_PAYING,TicketType.TICKET_NOT_PAY ,token);
+                    boolean updateB = ticketBookingNginxDbService.checkAndUpdateTicketType(TicketDBTableEnums.NGINX_QB, TicketType.TICKET_PAYING, TicketType.TICKET_NOT_PAY, token);
+                    //確定狀態 TICKET_PAYING -> TICKET_NOT_PAY 後補票API
+                    if(updateB){
+                        clientService.addQuantityReq(NginxQueueEnums.nginxQB.name(),1);
+                    }
                     break;
                 default:
                     log.error("監聽過期Token 沒有該區域 : {} , token : {}", area, token);

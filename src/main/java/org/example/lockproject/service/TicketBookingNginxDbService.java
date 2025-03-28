@@ -116,8 +116,7 @@ public class TicketBookingNginxDbService {
         int ticketType = dao.getTicketType();
         TicketType dbTickettype = TicketType.parse(ticketType);
         if (dbTickettype != null && dbTickettype == checkoutType) {
-            updateTicketType(tableName, token, updateType);
-            return true;
+            return updateTicketType(tableName, token, updateType);
         }
         return false;
     }
