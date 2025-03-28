@@ -1,10 +1,20 @@
 package org.example.lockproject.conf;
 
 import java.time.Duration;
+
+import io.lettuce.core.RedisChannelHandler;
+import io.lettuce.core.RedisConnectionStateListener;
+import jakarta.annotation.Resource;
+import lombok.extern.log4j.Log4j2;
 import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
+import org.example.lockproject.service.RedisKeyExpirationListener;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.DependsOn;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.RedisPassword;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
@@ -17,6 +27,7 @@ import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSeriali
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @Configuration
+@Log4j2
 public class RedisConfig {
 
     @Value("${spring.data.redis.database}")
@@ -49,6 +60,15 @@ public class RedisConfig {
     @Value("${spring.data.redis.lettuce.pool.max-wait}")
     private long maxWait;
 
+    // RedisMessageListenerContainer 監聽 Redis 的發布/訂閱（Pub/Sub）機制
+    @Bean
+    public RedisMessageListenerContainer redisMessageListenerContainer(RedisConnectionFactory connectionFactory) {
+        RedisMessageListenerContainer container = new RedisMessageListenerContainer();
+        container.setRecoveryInterval(5000L); // 5秒重试一次
+        container.setConnectionFactory(connectionFactory);
+        return container;
+    }
+
     @Bean
     LettuceConnectionFactory redisConnectionFactory() {
         GenericObjectPoolConfig<?> genericObjectPoolConfig = new GenericObjectPoolConfig<>();
@@ -71,6 +91,12 @@ public class RedisConfig {
         LettuceConnectionFactory factory = new LettuceConnectionFactory(redisStandaloneConfiguration, clientConfig);
         factory.setShareNativeConnection(true);
         factory.setValidateConnection(false);
+//
+        factory.afterPropertiesSet();  // 初始化 Lettuce 連接工廠
+//
+//        // 註冊 Redis 連線監聽器
+        factory.getNativeClient().addListener(new MyRedisConnectionStateListener());
+
         return factory;
     }
 
@@ -91,12 +117,7 @@ public class RedisConfig {
         return template;
     }
 
-    @Bean
-    RedisMessageListenerContainer container(RedisConnectionFactory connectionFactory) {
-        RedisMessageListenerContainer container = new RedisMessageListenerContainer();
-        container.setConnectionFactory(connectionFactory);
-        return container;
-    }
+
 
 
 }

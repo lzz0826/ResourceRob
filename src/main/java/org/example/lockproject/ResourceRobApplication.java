@@ -6,9 +6,11 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.EnableMBeanExport;
 import org.springframework.jmx.support.RegistrationPolicy;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
 @EnableMBeanExport(registration = RegistrationPolicy.IGNORE_EXISTING)
+@EnableScheduling
 public class ResourceRobApplication {
 
     public static void main(String[] args) throws Exception {

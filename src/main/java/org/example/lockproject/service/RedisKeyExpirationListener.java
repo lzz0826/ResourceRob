@@ -2,20 +2,14 @@ package org.example.lockproject.service;
 
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
-import org.example.lockproject.dao.TicketDAO;
 import org.example.lockproject.enums.TicketDBTableEnums;
 import org.example.lockproject.enums.TicketType;
 import org.example.lockproject.mq.enums.NginxQueueEnums;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.connection.Message;
 import org.springframework.data.redis.listener.KeyExpirationEventMessageListener;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Isolation;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Objects;
 
 import static org.example.lockproject.service.TicketBookingRedisService.*;
 
@@ -68,5 +62,23 @@ public class RedisKeyExpirationListener extends KeyExpirationEventMessageListene
             log.error("處理redis 過期的key異常：{}", expiredKey, e);
         }
     }
+
+
+//    @Resource
+//    private RedisMessageListenerContainer redisMessageListenerContainer;
+//
+//    /**
+//     * 重新啟動 Redis 訂閱監聽器
+//     */
+//    private void restartRedisListener() {
+//        try {
+//            log.info("嘗試重啟 Redis 訂閱監聽器...");
+//            redisMessageListenerContainer.stop();
+//            redisMessageListenerContainer.start();
+//            log.info("Redis 訂閱監聽器重新啟動成功");
+//        } catch (Exception e) {
+//            log.error("Redis 訂閱監聽器重啟失敗", e);
+//        }
+//    }
 
 }
