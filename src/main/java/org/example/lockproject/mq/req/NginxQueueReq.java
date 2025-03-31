@@ -20,7 +20,7 @@ public class NginxQueueReq {
 
     private String area;
 
-    private Date bookTime;
+    private Long bookTime;
 
     private String ticketToken;
 

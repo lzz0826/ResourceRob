@@ -9,26 +9,21 @@ public enum StatusCode {
  * 系統
  */
   Success(0,"成功"),
-
   SystemError(-1,"失敗"),
-
   MissingParameter(10,"缺少必要參數"),
-
   ErrorParameter(11,"參數錯誤"),
-
   AddFail(12,"新增失敗"),
-
   NeedPage(13,"需要頁碼"),
   NeedPageSize(14,"需要頁碼大小"),
-
   NotAllowedNullStr(15,"不允許空的字串"),
-
   BindExceptionError(16,"數據綁定錯誤,參數型別錯誤"),
-
   QueuesError(17,"Mq對列錯誤"),
-
   TicketTokenSignError(18,"簽名錯誤"),
   TicketTokenTimeOutError(19,"TicketToken已過期"),
+  TicketNotHasAreaError(20,"Ticket沒有對應區域"),
+  NotHasTicketRecordError(21,"沒有對應Ticket紀錄"),
+  TicketTypeNotPayingError(22,"尚未支付中"),
+  TicketToPayedError(23,"票支付失敗"),
 
   ;
 

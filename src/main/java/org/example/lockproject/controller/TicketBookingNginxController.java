@@ -8,11 +8,14 @@ import org.example.lockproject.common.BaseResp;
 import org.example.lockproject.common.StatusCode;
 import org.example.lockproject.controller.rep.BookTicket;
 import org.example.lockproject.controller.rep.CheckoutTicketTokenRep;
+import org.example.lockproject.controller.rep.TicketToPayedRep;
 import org.example.lockproject.controller.req.CheckTicketTokenReq;
+import org.example.lockproject.controller.req.TicketToPayReq;
 import org.example.lockproject.dao.TicketDAO;
 import org.example.lockproject.enums.TicketDBTableEnums;
 import org.example.lockproject.service.TicketBookingNginxCacheService;
 import org.example.lockproject.service.TicketBookingNginxDbService;
+import org.example.lockproject.service.TicketBookingNginxService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -22,6 +25,9 @@ import java.util.List;
 @RestController
 @RequestMapping("/nginx")
 public class TicketBookingNginxController {
+
+    @Resource
+    private TicketBookingNginxService ticketBookingNginxService;
 
     @Resource
     private TicketBookingNginxCacheService ticketBookingNginxCacheService;
@@ -43,8 +49,7 @@ public class TicketBookingNginxController {
         String bookTime = req.getBookTime();
         String ticketToken = req.getTicketToken();
 
-
-        StatusCode statusCode = ticketBookingNginxDbService.ticketTokenVerify(ticketName, userId,area, bookTime, ticketToken);
+        StatusCode statusCode = ticketBookingNginxService.ticketTokenVerify(ticketName, userId,area, bookTime, ticketToken);
 
         CheckoutTicketTokenRep rep = CheckoutTicketTokenRep
                 .builder()
@@ -72,21 +77,29 @@ public class TicketBookingNginxController {
         if(ticketDBOS != null){
             addRep(ticketDBOS,reps);
         }
-
-//        List<NginxQueueReq> qa = ticketBookingNginxCacheService.getTicketQAMap(userId);
-//        if(qa != null){
-//            reps.addAll(qa);
-//        }
-//        List<NginxQueueReq> qb = ticketBookingNginxCacheService.getTicketQBMap(userId);
-//        if(qb != null){
-//            reps.addAll(qb);
-//        }
-
         return BaseResp.ok(reps, StatusCode.Success);
     }
 
 
-    //------ 只有 Nginx ----------
+    //付款API 狀態 TICKET_PAYING -> TICKET_IS_PAY
+    @PostMapping("/ticketToPayed")
+    public BaseResp<TicketToPayedRep> ticketToPayed(@RequestBody @Valid TicketToPayReq req) throws Exception {
+
+        TicketToPayedRep rep = new TicketToPayedRep();
+
+        TicketDAO ticketDAO = ticketBookingNginxService.ticketToPayed(req.getTicketName(),req.getUserId(),req.getArea(),req.getBookTime(),req.getTicketToken());
+        rep.setUserId(ticketDAO.getUserId());
+        rep.setTicketName(ticketDAO.getTicketName());
+        rep.setTicketToken(ticketDAO.getTicketToken());
+        rep.setArea(ticketDAO.getArea());
+
+        return BaseResp.ok(rep, ticketDAO.getStatusCode());
+
+    }
+
+
+
+        //------ 只有 Nginx ----------
 
     //鎖 和 資源(票) 做在Nginx JAVA只負責紀錄
     @GetMapping("/bookTicket")

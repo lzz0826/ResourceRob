@@ -2,13 +2,16 @@ package org.example.lockproject.dao;
 
 
 import com.baomidou.mybatisplus.annotation.TableField;
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
+import org.example.lockproject.common.StatusCode;
 
 import java.util.Date;
 
 @Builder
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
 public class TicketDAO {
 
   @TableField("id")
@@ -24,7 +27,7 @@ public class TicketDAO {
   private String area;
 
   @TableField("book_time")
-  private Date bookTime;
+  private Long bookTime;
 
   @TableField("ticket_token")
   private String ticketToken;
@@ -37,6 +40,19 @@ public class TicketDAO {
 
   @TableField("update_time")
   private Date updateTime;
+
+  @TableField(exist = false) //ORM 會忽略這個欄位
+  private StatusCode statusCode;
+
+
+  public Date getBookTimeAsDate() {
+    return bookTime == null ? null : new Date(bookTime * 1000); // 秒級 Unix Timestamp，需要轉毫秒
+  }
+
+  public void setBookTimeFromDate(Date date) {
+    this.bookTime = (date == null) ? null : date.getTime() / 1000; // 轉換成秒級 Unix Timestamp
+  }
+
 
 
 }

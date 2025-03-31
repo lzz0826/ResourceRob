@@ -29,42 +29,6 @@ public class TicketBookingNginxDbService {
     private TicketMapper ticketMapper;
 
 
-    @Resource
-    private RedisService redisService;
-
-    @Resource
-    private TicketBookingRedisService ticketBookingRedisService;
-
-    @Value("${ticket.signKey}")
-    private String signKey;
-
-
-
-    //驗證TOKEN sha256 ticketName_userId_area_book_time
-    public StatusCode ticketTokenVerify(String ticketName , String userId, String area , String bookTime, String ticketToken) throws Exception {
-
-        String token = ticketBookingRedisService.GetTicketTokenValue(ticketToken,userId,area);
-
-        if(StringUtils.isBlank(token)){
-            return StatusCode.TicketTokenTimeOutError;
-        }
-
-        //驗證簽名
-        if(!ticketTokenSign(ticketName,userId,area ,bookTime,token)){
-            return StatusCode.TicketTokenSignError;
-        }
-        return StatusCode.Success;
-    }
-
-    public boolean ticketTokenSign(String ticketName ,String userId,String area ,String bookTime,String ticketToken) throws Exception {
-        //簽名規則 ticketName_userId_area_bookTime
-        String signStr = ticketName + "_" + userId + "_" + area +"_" + bookTime;
-        String key = signKey;
-        String checkKey = HMACSHA256Util.generateHmacSHA256(key,signStr);
-        return ticketToken.equals(checkKey);
-    }
-
-
     public void insertTicket(TicketDBTableEnums tableName , TicketDAO ticketDAO){
         ticketMapper.insertOne(tableName.getName() , ticketDAO);
     }

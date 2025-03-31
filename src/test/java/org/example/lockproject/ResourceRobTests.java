@@ -48,7 +48,7 @@ class ResourceRobTests {
                 .ticketName("fff")
                 .userId("userId")
                 .area("a")
-                .bookTime(new Date())
+                .bookTime(0L)
                 .ticketToken("tbrtb")
                 .ticketType(1)
                 .updateTime(new Date())

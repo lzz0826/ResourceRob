@@ -16,7 +16,7 @@ public interface TicketMapper extends BaseMapper<TicketDAO> {
             "VALUES (#{ticketDao.ticketName}, #{ticketDao.userId}, #{ticketDao.area}, #{ticketDao.bookTime}, #{ticketDao.ticketToken}, #{ticketDao.ticketType}, #{ticketDao.updateTime})")
     void insertOne(@Param("tableName")String tableName, @Param("ticketDao") TicketDAO ticketDao);
 
-    @Select("select *  From `${tableName}` where user_id = #{user_id}")
+    @Select("select *  From `${tableName}` where user_id = #{userId}")
     List<TicketDAO> findByUserId(@Param("tableName")String tableName, String userId);
 
     @Select("select * From `${tableName}` where ticket_token = #{token}")

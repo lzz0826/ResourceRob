@@ -9,7 +9,7 @@
     <result column="ticket_name" property="ticketName" jdbcType="VARCHAR" />
     <result column="user_id" property="userId" jdbcType="VARCHAR" />
     <result column="area" property="area" jdbcType="VARCHAR" />
-    <result column="book_time" property="bookTime" jdbcType="VARCHAR" />
+    <result column="book_time" property="bookTime" jdbcType= "BIGINT" />
     <result column="ticket_token" property="ticketToken" jdbcType="VARCHAR" />
     <result column="ticket_type" property="ticketType" jdbcType="INTEGER" />
     <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
