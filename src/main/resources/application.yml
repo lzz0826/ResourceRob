@@ -33,10 +33,11 @@ spring:
           max-active: 10  #
           max-idle: 5     #
           min-idle: 1     #
-mybatis:
+mybatis-plus:
   mapper-locations: classpath*:mapper/*.xml #MyBatis映射文件的位置
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl #开启SQL语句打印
+
 
 ticket:
   signKey: your-testKey-key #簽名用私鑰Key
