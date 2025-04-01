@@ -55,7 +55,7 @@ public class TicketBookingNginxService {
             repDao.setStatusCode(StatusCode.TicketNotHasAreaError);
             return repDao;
         }
-        //驗證 Token
+        //驗證傳來 Token
         boolean b = ticketTokenSign(ticketName,userId,area ,bookTime,ticketToken);
         if(!b){
             repDao.setStatusCode(StatusCode.TicketTokenSignError);
@@ -64,6 +64,12 @@ public class TicketBookingNginxService {
         TicketDAO ticketDAO = dbService.selectTicketByToken(ticketDBTableEnums,ticketToken);
         if(ticketDAO == null){
             repDao.setStatusCode(StatusCode.NotHasTicketRecordError);
+            return repDao;
+        }
+        String daoToken = ticketDAO.getTicketToken();
+
+        if(!daoToken.equals(ticketToken)){
+            repDao.setStatusCode(StatusCode.TicketTokenSignError);
             return repDao;
         }
 
