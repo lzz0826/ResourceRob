@@ -41,12 +41,12 @@ public class TicketNginxAndRabbitmqBookingSystem {
         ExecutorService executor = Executors.newFixedThreadPool(100);
 
         List<Future<NginxAndMqRep>> futures = new ArrayList<>();
-        for (int i = 0; i < 10000; i++) {
+        for (int i = 0; i < 1; i++) {
             int finalI = i;
             Callable<NginxAndMqRep> callableTask = () -> {
                 try {
-                    String userId = UUID.randomUUID().toString();
-                    return testNginxAndMq(userId,area(finalI));
+                    String userId ="USER" +UUID.randomUUID().toString();
+                    return testNginxAndMq(userId,area(finalI),"tName");
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
@@ -67,10 +67,10 @@ public class TicketNginxAndRabbitmqBookingSystem {
                     if(rep.status.equals("success")){
                         NginxQueueEnums parse = NginxQueueEnums.parse(rep.area);
                         switch (parse) {
-                            case NginxQA:
+                            case nginxQA:
                                 countA.incrementAndGet();
                                 break;
-                            case NginxQB:
+                            case nginxQB:
                                 countB.incrementAndGet();
                                 break;
                         }
@@ -103,11 +103,11 @@ public class TicketNginxAndRabbitmqBookingSystem {
         System.out.println("結束...");
     }
 
-    private static NginxAndMqRep testNginxAndMq(String userId , String area) throws IOException {
+    private static NginxAndMqRep testNginxAndMq(String userId , String area,String ticketName) throws IOException {
         OkHttpClient client = new OkHttpClient().newBuilder()
                 .build();
         MediaType mediaType = MediaType.parse("application/json");
-        String jsonBody = String.format("{\"userId\": \"%s\", \"area\": \"%s\"}", userId, area);
+        String jsonBody = String.format("{\"userId\": \"%s\", \"area\": \"%s\", \"ticketName\": \"%s\"}", userId, area,ticketName);
         RequestBody body = RequestBody.create(mediaType, jsonBody);
         Request request = new Request.Builder()
                 .url("http://localhost:" + port + "/bookNginx-ticket")
@@ -132,9 +132,9 @@ public class TicketNginxAndRabbitmqBookingSystem {
 
     private static String area(int i){
         if(i%2 == 0){
-            return NginxQueueEnums.NginxQA.area;
+            return NginxQueueEnums.nginxQA.name();
         }
-        return NginxQueueEnums.NginxQB.area;
+        return NginxQueueEnums.nginxQB.name();
     }
 
 

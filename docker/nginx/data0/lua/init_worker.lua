@@ -29,7 +29,10 @@ local function flush_timer()
 
         -- 構建發送消息的標頭（headers），指定消息的目的地和內容類型
         local headers = {
-            destination = "/queue/nginxQ",
+            -- 指定隊列/隊列名
+            -- destination = "/queue/nginxQ",
+            -- 指定交換機/交換機名/routing-key
+            destination = "/exchange/ticketExchange/ticket-key",
             -- ["content-type"] = "text/plain" -- 設置消息的內容類型為純文本
             ["content-type"] = "application/json" --設置消息的內容類型為JSON
         }
@@ -50,6 +53,8 @@ local function flush_timer()
                 queue:delete(i) -- 清理已處理的數據
             end
         end
+        -- 關閉連線
+        conn:close()
     end
 
     -- 註冊下一次定時任務

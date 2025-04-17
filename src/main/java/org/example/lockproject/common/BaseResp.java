@@ -1,6 +1,5 @@
 package org.example.lockproject.common;
 
-import com.alibaba.fastjson2.annotation.JSONField;
 import lombok.Builder;
 import lombok.Data;
 
@@ -19,7 +18,7 @@ public class BaseResp<T> {
     return statusCode.code;
   }
 
-  public String getMst(){
+  public String getMsg(){
 
     if(statusCode == null){
       return null;

@@ -24,19 +24,24 @@ spring:
       lettuce:
         shutdown-timeout: 100
         pool:
-          max-active: 3
-          min-idle: 2
-          max-idle: 3
-          max-wait: 1
+          max-active: 3 # 最大活躍連線數量，表示同時能夠處理的最大連接數量
+          min-idle: 2 # 最小閒置連線數量，表示 Redis 連接池中保持的最少閒置連接數量
+          max-idle: 3 # 最大閒置連線數量，表示 Redis 連接池中允許的最大閒置連接數量
+          max-wait: 1  # 最大等待時間，當連接池中沒有可用的連接時，表示最大等待時間（單位為毫秒）
       jedis:
         pool:
           max-active: 10  #
           max-idle: 5     #
           min-idle: 1     #
-mybatis:
+mybatis-plus:
   mapper-locations: classpath*:mapper/*.xml #MyBatis映射文件的位置
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl #开启SQL语句打印
+
+
+ticket:
+  signKey: your-testKey-key #簽名用私鑰Key
+
 
 
 

@@ -6,27 +6,27 @@ public enum NginxQueueEnums {
 
 
     //共用 通道 包含 QA QB
-    NginxQ("nginxQ","nginxQ"),
+    nginxQ(),
+
+    //死信隊列
+    nginxQDlx(),
 
     //區域A
-    NginxQA("nginxQA","nginxQA"),
+    nginxQA(),
 
 
-    //區域A
-    NginxQB("nginxQB","nginxQB");
+    //區域B
+    nginxQB();
 
-    public final String name;
-    public final String area;
 
-    NginxQueueEnums(String name, String area){
-        this.name = name;
-        this.area = area;
+
+    NginxQueueEnums(){
     }
 
     public static NginxQueueEnums parse(String name) {
         if(!StringUtils.isBlank(name)){
             for(NginxQueueEnums info : values()){
-                if(info.name.equals(name)){
+                if(info.name().equals(name)){
                     return info;
                 }
             }

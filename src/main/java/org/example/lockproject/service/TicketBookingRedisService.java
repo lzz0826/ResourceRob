@@ -2,6 +2,8 @@ package org.example.lockproject.service;
 
 
 import jakarta.annotation.Resource;
+import lombok.extern.log4j.Log4j2;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
@@ -10,10 +12,73 @@ import redis.clients.jedis.params.SetParams;
 import static org.example.lockproject.enums.TicketBookingEnums.SOME_TICKET;
 
 @Service
+@Log4j2
 public class TicketBookingRedisService {
 
     @Resource
     private JedisPool jedisPool;
+
+    @Resource
+    private RedisService redisService;
+
+
+    //存TicketToken 過期後代表沒有付款 key = ticketToken_userID_area
+    public void setTicketTokenKey(String ticketToken, String userId, String area, Long expireTime){
+        boolean set = redisService.set(ticketTokenKeyCreat(ticketToken,userId,area),ticketToken,expireTime);
+        if(!set){
+            log.error("setTicketToken err {ticketToken: {} userID: {}}", ticketToken,userId);
+        }
+    }
+
+    //取得存TicketToken 緩存 key = ticketToken_userID_area
+    //反回 取的存TicketToken
+    public String GetTicketTokenValue(String ticketToken, String userId, String area){
+        String ticketTokenValue = (String) redisService.get(ticketTokenKeyCreat(ticketToken,userId,area));
+        if(StringUtils.isBlank(ticketTokenValue)){
+            return "";
+        }
+        return ticketTokenValue;
+    }
+
+    public static String GetTicketTokenKeyToken(String ticketTokenKey){
+        if (StringUtils.isBlank(ticketTokenKey)) {
+            return "";
+        }
+        String[] split = StringUtils.split(ticketTokenKey,"_");
+        if (split == null || split.length == 0 || StringUtils.isBlank(split[0])) {
+            return "";
+        }
+        return split[0];
+    }
+
+    public static String GetTicketTokenKeyUserId(String ticketTokenKey) {
+        if (StringUtils.isBlank(ticketTokenKey)) {
+            return "";
+        }
+        String[] split = StringUtils.split(ticketTokenKey, "_");
+        if (split == null || split.length < 2 || StringUtils.isBlank(split[1])) {
+            return "";
+        }
+        return split[1];
+    }
+
+    public static String GetTicketTokenKeyArea(String ticketTokenKey){
+        if (StringUtils.isBlank(ticketTokenKey)) {
+            return "";
+        }
+        String[] split = StringUtils.split(ticketTokenKey,"_");
+        if (split == null || split.length < 3 || StringUtils.isBlank(split[2])) {
+            return "";
+        }
+        return split[2];
+    }
+
+    protected static String ticketTokenKeyCreat(String ticketToken,String userId,String area){
+        return ticketToken+"_"+userId+"_"+area;
+    }
+
+
+    //------------------------------------------------------------
 
     public void setTicketKey(String ticketKey){
         Jedis jedis = jedisPool.getResource();
@@ -25,6 +90,7 @@ public class TicketBookingRedisService {
             jedis.close();
         }
     }
+
 
     public boolean acquireLock(String lockValue) {
         Jedis jedis = jedisPool.getResource();

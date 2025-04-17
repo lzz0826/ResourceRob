@@ -1,10 +1,11 @@
 # 使用帶有 Lua 的 Nginx 基礎映像
 FROM fabiocicerchia/nginx-lua
 
-# 安裝開發工具和 luarocks
+# 安裝開發工具和 luarocks(套件管理器)
 RUN apk update && \
     apk add --no-cache build-base luarocks && \
-    luarocks install lua-cjson
+    luarocks install lua-cjson && \
+    luarocks install lua-resty-openssl
 
 
 # 複製配置文件到容器中

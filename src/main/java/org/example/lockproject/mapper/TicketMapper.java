@@ -1,33 +1,33 @@
 package org.example.lockproject.mapper;
 
 
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Select;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.*;
 import org.example.lockproject.dao.TicketDAO;
-import org.springframework.stereotype.Service;
+
 
 import java.util.List;
 
 
 @Mapper
-public interface TicketMapper {
+public interface TicketMapper extends BaseMapper<TicketDAO> {
 
-    @Insert("INSERT INTO ticket_nginxQA (ticketId, userId, area, time) " +
-            "VALUES (#{ticketId}, #{userId}, #{area}, #{time})")
-    void insertNginxQAOne(TicketDAO ticket);
+    @Insert("INSERT INTO ${tableName} (ticket_name, user_id, area, book_time, ticket_token, ticket_type, update_time) " +
+            "VALUES (#{ticketDao.ticketName}, #{ticketDao.userId}, #{ticketDao.area}, #{ticketDao.bookTime}, #{ticketDao.ticketToken}, #{ticketDao.ticketType}, #{ticketDao.updateTime})")
+    void insertOne(@Param("tableName")String tableName, @Param("ticketDao") TicketDAO ticketDao);
 
-    @Insert("INSERT INTO ticket_nginxQB (ticketId, userId, area, time) " +
-            "VALUES (#{ticketId}, #{userId}, #{area}, #{time})")
-    void insertNginxQBOne(TicketDAO ticket);
+    @Select("select *  From `${tableName}` where user_id = #{userId}")
+    List<TicketDAO> findByUserId(@Param("tableName")String tableName, String userId);
+
+    @Select("select * From `${tableName}` where ticket_token = #{token}")
+    TicketDAO findTicketByToken(@Param("tableName")String tableName, String token);
 
 
-    @Select("select * ,time From `ticket_nginxQA` where userId = #{userId}")
-    List<TicketDAO> findNginxQAByUserId(String userId);
+    @Select("select ticket_type  From `${tableName}` where ticket_token = #{token}")
+    int findTicketTypeByToken(@Param("tableName")String tableName, String token);
 
-    @Select("select * ,time From `ticket_nginxQB` where userId = #{userId}")
-    List<TicketDAO> findNginxQBByUserId(String userId);
-
+    @Update("UPDATE ${tableName} SET ticket_type = #{ticketType} WHERE ticket_token= #{ticketToken}")
+    int updateTicketType(@Param("tableName")String tableName,String ticketToken, int ticketType);
 
 
 }
