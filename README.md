@@ -31,16 +31,11 @@
 http://localhost/initNginx-ticket?area=nginxQA&count=500 <br />
 http://localhost/initNginx-ticket?area=nginxQB&count=500  <br />
 
-補票&添加票API GET: (以初始化好的票再添加)API: <br />
-http://localhost/addTicketNginx-ticket?area=nginxQA&addQuantity=100 <br />
-
-消費資源API Post: <br />
-curl -X POST http://172.24.10.37/bookNginx-ticket \
--H "Content-Type: application/json" \
--d '{"userId": "user001", "area": "nginxQA"}'
-
 搶票API CURL: <br />
 curl -X POST http://172.24.10.199/bookNginx-ticket -H "Content-Type: application/json" -d '{"userId": "user001", "area": "nginxQA", "ticketName": "standard"}'
+
+補票&添加票API GET: (以初始化好的票再添加)API: <br />
+http://localhost/addTicketNginx-ticket?area=nginxQA&addQuantity=100 <br />
 
 <br />
 接收請求階段: 接收一個請求時，將write_point原子性自增1，將返回的, 已經更新過的write_point值作為存放當前request data的key, 存放到Share Dict中.
