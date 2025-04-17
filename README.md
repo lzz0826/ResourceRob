@@ -10,7 +10,7 @@
 - JAVA後端：處理業務邏輯 接收前端消息 儲存 查群。 <br />
 - MySQL：持久化。 <br />
 <br />
-開票 -> 搶到 -> Redis 存(過期相當於付款時間) -> 到期 -> 檢查(DB 狀態) -> 有付 -> 不變  
+開票 -> 搶到 -> Redis 存(過期相當於付款時間) -> 到期 -> 檢查(DB 狀態) -> 有付 -> 不變<br />  
                                                                -> 沒付 -> 改DB狀態 -> 放回Nginx 
 <br />
 
@@ -28,7 +28,7 @@
 - 接收請求階段: 接收一個請求時，將write_point原子性自增1，將返回的, 已經更新過的write_point值作為存放當前request data的key, 存放到Share Dict中.
 - Timer運行階段: Timer啟動后, 讀取write_point和read_point, 如果發現read_point < write_point, 開啟flush階段, 不斷自增read_point, 將新的read_point值作為key, 從Share Dict取出data, 發送到rabbitmq中, 直到read_point = write_point, 此次flush工作結束.
 
-##### Nginx 服務API
+### Nginx 服務API
 初始化票API: <br />
 http://localhost/initNginx-ticket?area=nginxQA&count=500 <br />
 http://localhost/initNginx-ticket?area=nginxQB&count=500  <br />
@@ -49,7 +49,7 @@ curl -X POST http://172.24.10.199/bookNginx-ticket -H "Content-Type: application
 
 Timer運行階段: Timer啟動后, 讀取write_point和read_point, 如果發現read_point<write_point, 開啟flush階段, 不斷自增read_point, 將新的read_point值作為key, 從Share Dict取出data, 發送到rabbitmq中, 直到read_point=write_point, 此次flush工作結束.
 
-##### JAVA 服務API
+### JAVA 服務API
 
 查詢票 CURL: <br />
 curl --location 'http://localhost:8080/ticket/nginx/checkoutTicket/user001'
