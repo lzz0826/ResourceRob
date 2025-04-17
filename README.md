@@ -15,7 +15,7 @@
 <br />
 
 ## N台後端服務 + Nginx + RabbitMQ：
-![image](https://github.com/lzz0826/ResourceRob/blob/main/imgs/004.png)
+![image](https://github.com/lzz0826/ResourceRob/blob/main/imgs/Ticket.jpg)
 1. 在開始爭搶資源時,初始化資源(Nginx共享資源中存放 *注意原子性)
 2. 用戶請求到 Nginx , 由Nginx判斷是否還有資源,有:扣除資源到 RabbitMq ,無:返回用戶失敗
 3. RabbitMq 生產消息 , JAVA後端監聽消息
@@ -93,11 +93,8 @@ data =  ticketName + userId + area + book_time  <br />
 
 3. 加密方法
 使用 HMAC-SHA256 生成簽名，步驟如下：
-
 準備密鑰 secret_key（應妥善保管，不對外公開）。
-
 使用 HMAC-SHA256 對 <data> 進行簽名。
-
 簽名結果轉為十六進制字符串。
 
 4.簽名驗證
