@@ -1,6 +1,6 @@
 <mxfile host="Electron" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/26.2.2 Chrome/134.0.6998.178 Electron/35.1.2 Safari/537.36" version="26.2.2">
   <diagram id="C5RBs43oDa-KdzZeNtuy" name="Page-1">
-    <mxGraphModel dx="1347" dy="606" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+    <mxGraphModel dx="1347" dy="613" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="WIyWlLk6GJQsqaUBKTNV-0" />
         <mxCell id="WIyWlLk6GJQsqaUBKTNV-1" parent="WIyWlLk6GJQsqaUBKTNV-0" />
@@ -23,10 +23,10 @@
           <mxGeometry y="30" width="350" height="210" as="geometry" />
         </mxCell>
         <mxCell id="yOwY01K6usckxP9kXJAJ-36" value="addTicketNginx-ticket&amp;nbsp;補票接口(以初始化好的票再添加)" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" parent="yOwY01K6usckxP9kXJAJ-17" vertex="1">
-          <mxGeometry x="432.5" y="220" width="260" height="90" as="geometry" />
+          <mxGeometry x="432.5" y="220" width="227.5" height="90" as="geometry" />
         </mxCell>
         <mxCell id="yOwY01K6usckxP9kXJAJ-37" value="核心流程:&lt;div&gt;1.驗證是否創建過&lt;/div&gt;&lt;div&gt;2.添加對應的票&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;/div&gt;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" parent="yOwY01K6usckxP9kXJAJ-36" vertex="1">
-          <mxGeometry y="30" width="260" height="60" as="geometry" />
+          <mxGeometry y="30" width="227.5" height="60" as="geometry" />
         </mxCell>
         <mxCell id="BC8Rf4KZXWb3bD4zQ2RA-10" value="享內存字典(有原子性)" style="rounded=1;whiteSpace=wrap;html=1;" parent="yOwY01K6usckxP9kXJAJ-17" vertex="1">
           <mxGeometry x="340" y="80" width="120" height="60" as="geometry" />
@@ -62,10 +62,10 @@
           <mxGeometry x="380" y="620" width="715" height="490" as="geometry" />
         </mxCell>
         <mxCell id="yOwY01K6usckxP9kXJAJ-41" value="NginxQReceiver MQ消費者" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" parent="yOwY01K6usckxP9kXJAJ-24" vertex="1">
-          <mxGeometry x="410" y="50" width="280" height="160" as="geometry" />
+          <mxGeometry x="370" y="50" width="250" height="180" as="geometry" />
         </mxCell>
-        <mxCell id="yOwY01K6usckxP9kXJAJ-42" value="核心流程:&lt;div&gt;1.驗證消息參數&lt;/div&gt;&lt;div&gt;2.創建該票訂單&lt;/div&gt;&lt;div&gt;3.存入Redis設置過期時間(付款時間)&lt;/div&gt;&lt;div&gt;&lt;div&gt;4.存入對應區域 DB&lt;/div&gt;&lt;/div&gt;&lt;div&gt;5.手動Ack通知MQ&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;TicketType =&amp;nbsp;TICKET_CREATE(0)&lt;/div&gt;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" parent="yOwY01K6usckxP9kXJAJ-41" vertex="1">
-          <mxGeometry y="30" width="280" height="130" as="geometry" />
+        <mxCell id="yOwY01K6usckxP9kXJAJ-42" value="核心流程:&lt;div&gt;1.驗證消息參數&lt;/div&gt;&lt;div&gt;2.驗籤 依照簽名規則(私鑰)&lt;/div&gt;&lt;div&gt;3.創建該票訂單&lt;/div&gt;&lt;div&gt;4.存入Redis設置過期時間(付款時間)&lt;/div&gt;&lt;div&gt;&lt;div&gt;5.存入對應區域 DB&lt;/div&gt;&lt;/div&gt;&lt;div&gt;6.手動Ack通知MQ&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;TicketType =&amp;nbsp;TICKET_CREATE(0)&lt;/div&gt;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" parent="yOwY01K6usckxP9kXJAJ-41" vertex="1">
+          <mxGeometry y="30" width="250" height="150" as="geometry" />
         </mxCell>
         <mxCell id="BC8Rf4KZXWb3bD4zQ2RA-1" value="ticketToPayed 付款API" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" parent="yOwY01K6usckxP9kXJAJ-24" vertex="1">
           <mxGeometry x="40" y="240" width="260" height="180" as="geometry" />
@@ -80,21 +80,10 @@
           <mxGeometry y="30" width="260" height="110" as="geometry" />
         </mxCell>
         <mxCell id="BC8Rf4KZXWb3bD4zQ2RA-22" value="RedisKeyExpirationListener 過期Key通知" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" parent="yOwY01K6usckxP9kXJAJ-24" vertex="1">
-          <mxGeometry x="420" y="290" width="280" height="160" as="geometry" />
+          <mxGeometry x="370" y="290" width="280" height="160" as="geometry" />
         </mxCell>
         <mxCell id="BC8Rf4KZXWb3bD4zQ2RA-23" value="核心流程:&lt;div&gt;1.接收過期消息&lt;/div&gt;&lt;div&gt;2.根據區域更新票狀態&lt;/div&gt;&lt;div&gt;3.通知 Nginx 補票&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;付款狀態&lt;/span&gt;&amp;nbsp;TICKET_PAYING -&amp;gt; TICKET_NOT_PAY&amp;nbsp;&lt;/div&gt;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" parent="BC8Rf4KZXWb3bD4zQ2RA-22" vertex="1">
           <mxGeometry y="30" width="280" height="130" as="geometry" />
-        </mxCell>
-        <mxCell id="BC8Rf4KZXWb3bD4zQ2RA-30" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;entryPerimeter=0;" parent="yOwY01K6usckxP9kXJAJ-24" target="yOwY01K6usckxP9kXJAJ-20" edge="1">
-          <mxGeometry relative="1" as="geometry">
-            <mxPoint x="690" y="120" as="sourcePoint" />
-            <mxPoint x="840" y="80" as="targetPoint" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="BC8Rf4KZXWb3bD4zQ2RA-37" value="&lt;font style=&quot;font-size: 14px;&quot;&gt;創建票 狀態 0&lt;/font&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="BC8Rf4KZXWb3bD4zQ2RA-30" vertex="1" connectable="0">
-          <mxGeometry x="0.2823" y="2" relative="1" as="geometry">
-            <mxPoint as="offset" />
-          </mxGeometry>
         </mxCell>
         <mxCell id="yOwY01K6usckxP9kXJAJ-29" value="&lt;font style=&quot;font-size: 14px;&quot;&gt;管理員&lt;/font&gt;" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;" parent="WIyWlLk6GJQsqaUBKTNV-1" vertex="1">
           <mxGeometry x="140" y="130" width="70" height="120" as="geometry" />
@@ -110,29 +99,30 @@
         </mxCell>
         <mxCell id="BC8Rf4KZXWb3bD4zQ2RA-38" value="&lt;font size=&quot;3&quot;&gt;支付期限&lt;/font&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="BC8Rf4KZXWb3bD4zQ2RA-31" vertex="1" connectable="0">
           <mxGeometry x="-0.7279" y="-1" relative="1" as="geometry">
-            <mxPoint x="26" y="-1" as="offset" />
+            <mxPoint x="-13" y="-1" as="offset" />
           </mxGeometry>
         </mxCell>
         <mxCell id="BC8Rf4KZXWb3bD4zQ2RA-33" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0;entryDx=0;entryDy=135;entryPerimeter=0;" parent="WIyWlLk6GJQsqaUBKTNV-1" source="BC8Rf4KZXWb3bD4zQ2RA-23" target="yOwY01K6usckxP9kXJAJ-20" edge="1">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="1080" y="1030" />
-              <mxPoint x="1230" y="1030" />
+              <mxPoint x="1230" y="1005" />
               <mxPoint x="1230" y="775" />
             </Array>
           </mxGeometry>
         </mxCell>
         <mxCell id="BC8Rf4KZXWb3bD4zQ2RA-41" value="&lt;font style=&quot;font-size: 14px;&quot;&gt;更新票 狀態 3&lt;/font&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="BC8Rf4KZXWb3bD4zQ2RA-33" vertex="1" connectable="0">
           <mxGeometry x="-0.6552" y="3" relative="1" as="geometry">
-            <mxPoint as="offset" />
+            <mxPoint x="20" as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="BC8Rf4KZXWb3bD4zQ2RA-34" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=0;entryX=1.016;entryY=0.045;entryDx=0;entryDy=0;entryPerimeter=0;" parent="WIyWlLk6GJQsqaUBKTNV-1" source="yOwY01K6usckxP9kXJAJ-38" target="BC8Rf4KZXWb3bD4zQ2RA-23" edge="1">
-          <mxGeometry relative="1" as="geometry" />
+        <mxCell id="BC8Rf4KZXWb3bD4zQ2RA-34" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=0;" parent="WIyWlLk6GJQsqaUBKTNV-1" source="yOwY01K6usckxP9kXJAJ-38" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1034" y="946" as="targetPoint" />
+          </mxGeometry>
         </mxCell>
         <mxCell id="BC8Rf4KZXWb3bD4zQ2RA-39" value="&lt;font size=&quot;3&quot;&gt;檢查過期&lt;/font&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="BC8Rf4KZXWb3bD4zQ2RA-34" vertex="1" connectable="0">
           <mxGeometry x="0.6244" y="3" relative="1" as="geometry">
-            <mxPoint x="17" y="1" as="offset" />
+            <mxPoint x="48" y="-4" as="offset" />
           </mxGeometry>
         </mxCell>
         <mxCell id="BC8Rf4KZXWb3bD4zQ2RA-46" value="" style="shape=flexArrow;endArrow=classic;startArrow=classic;html=1;rounded=0;entryX=-0.003;entryY=0.274;entryDx=0;entryDy=0;entryPerimeter=0;" parent="WIyWlLk6GJQsqaUBKTNV-1" target="yOwY01K6usckxP9kXJAJ-31" edge="1">
@@ -208,15 +198,15 @@
           </mxGeometry>
         </mxCell>
         <mxCell id="yOwY01K6usckxP9kXJAJ-34" value="" style="sketch=0;pointerEvents=1;shadow=0;dashed=0;html=1;strokeColor=none;fillColor=#505050;labelPosition=center;verticalLabelPosition=bottom;verticalAlign=top;outlineConnect=0;align=center;shape=mxgraph.office.security.key_permissions;" parent="WIyWlLk6GJQsqaUBKTNV-1" vertex="1">
-          <mxGeometry x="1160" y="590" width="37.5" height="73" as="geometry" />
+          <mxGeometry x="1430" y="200" width="30" height="63" as="geometry" />
         </mxCell>
         <mxCell id="BC8Rf4KZXWb3bD4zQ2RA-74" value="&lt;span style=&quot;font-size: 14px;&quot;&gt;驗籤用私鑰&lt;/span&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="WIyWlLk6GJQsqaUBKTNV-1" vertex="1" connectable="0">
-          <mxGeometry x="1178.7482352941176" y="680" as="geometry" />
+          <mxGeometry x="1444.9982352941176" y="280" as="geometry" />
         </mxCell>
         <mxCell id="JaTTl8UMGCdsu4EIAQxv-0" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=1.004;entryY=0.367;entryDx=0;entryDy=0;entryPerimeter=0;" parent="WIyWlLk6GJQsqaUBKTNV-1" source="BC8Rf4KZXWb3bD4zQ2RA-23" target="yOwY01K6usckxP9kXJAJ-37" edge="1">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="1080" y="1050" />
+              <mxPoint x="1030" y="1050" />
               <mxPoint x="1550" y="1050" />
               <mxPoint x="1550" y="372" />
             </Array>
@@ -242,6 +232,26 @@
         </mxCell>
         <mxCell id="YvE3icViY0D3dbv1Llsh-5" value="&lt;span style=&quot;font-size: 14px;&quot;&gt;更新票 狀態 2&lt;/span&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="YvE3icViY0D3dbv1Llsh-3" vertex="1" connectable="0">
           <mxGeometry x="-0.6447" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="b7NEhC9tIG_lkZYApb1a-12" value="簽名用私鑰" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" parent="WIyWlLk6GJQsqaUBKTNV-1" vertex="1">
+          <mxGeometry x="1180" y="160" width="220" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="b7NEhC9tIG_lkZYApb1a-13" value="&lt;div&gt;Token 簽名規則 :&amp;nbsp;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;ticketName&lt;/span&gt;&lt;/div&gt;&lt;div&gt;userId&lt;/div&gt;&lt;div&gt;area&lt;/div&gt;&lt;div&gt;bookTime&lt;/div&gt;&lt;div&gt;ticketToken = (ticketName + userId + area + book_time)&lt;/div&gt;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" parent="b7NEhC9tIG_lkZYApb1a-12" vertex="1">
+          <mxGeometry y="30" width="220" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="BC8Rf4KZXWb3bD4zQ2RA-30" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1.004;exitY=0.267;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;entryPerimeter=0;exitPerimeter=0;" parent="WIyWlLk6GJQsqaUBKTNV-1" source="yOwY01K6usckxP9kXJAJ-42" target="yOwY01K6usckxP9kXJAJ-20" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1070" y="740" as="sourcePoint" />
+            <mxPoint x="1220" y="700" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="1001" y="735" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="BC8Rf4KZXWb3bD4zQ2RA-37" value="&lt;font style=&quot;font-size: 14px;&quot;&gt;創建票 狀態 0&lt;/font&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="BC8Rf4KZXWb3bD4zQ2RA-30" vertex="1" connectable="0">
+          <mxGeometry x="0.2823" y="2" relative="1" as="geometry">
             <mxPoint as="offset" />
           </mxGeometry>
         </mxCell>
