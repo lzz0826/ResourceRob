@@ -1,59 +1,18 @@
 # ResourceRob 高併發搶票系統
 
-![image](https://github.com/lzz0826/ResourceRob/blob/main/imgs/004.png)
+![image](https://github.com/lzz0826/ResourceRob/blob/main/imgs/Ticket.jpg)
 
 ## 核心概念包括：
 ### 核心問題 : 排除非必要請求到後段 , 解決同時大量請求 *每個服務之間調用要注意 原子性
-- Redis：最基本的方式 (資源放Redis) 。 <br />
+- Redis：Tokne過期通知 (資源放Redis) 。 <br />
 - RabbitMq：解決 "同時" 大量請求。 <br />
 - Nginx：區分 "搶到" "未搶到" 只讓搶到的人進到後端 (資源放Nginx)。 <br />
 - JAVA後端：處理業務邏輯 接收前端消息 儲存 查群。 <br />
 - MySQL：持久化。 <br />
 <br />
+開票 -> 搶到 -> Redis 存(過期相當於付款時間) -> 到期 -> 檢查(DB 狀態) -> 有付 -> 不變  
+                                                               -> 沒付 -> 改DB狀態 -> 放回Nginx 
 <br />
-
-# 優化過程 & 方案選擇:
-
-## N台後端服務 + RabbitMQ：
-![image](https://github.com/lzz0826/ResourceRob/blob/main/imgs/002.jpg)
-1. 在開始爭搶資源時,初始化資源(透過JAVA後端API在 MQ隊列中存放 )
-2. 用戶請求到任意後端,收到請求的後端到 MQ 對列中看是否還存在該資源
-3. 有資源"消費"並持久化,沒資源返回用戶失敗
-
-- 解決: 同時大量進到 JAVA 後端 使用MQ 排隊
-- 未解決: "搶到","沒搶到" 同時進到 JAVA 後端
-
-初始化資源API: <br />
-http://localhost:8080/ticket/rabbitmq/setQa <br />
-http://localhost:8080/ticket/rabbitmq/setQb
-
-消費資源API: <br />
-http://localhost:8080/ticket/rabbitmq/bookTicketA <br />
-http://localhost:8080/ticket/rabbitmq/bookTicketB
-
-測試: <br />
-ResourceRob/src/main/java/org/example/lockproject/test/TicketRabbitmqBookingSystem.java
-
-## 後端服務 + Nginx：
-![image](https://github.com/lzz0826/ResourceRob/blob/main/imgs/001.png)
-1. 在開始爭搶資源時,初始化資源(Nginx共享資源中存放 *注意原子性)
-2. 用戶請求到 Nginx , 由Nginx判斷是否還有資源,有:扣除資源到後端,無:返回用戶失敗
-3. 有資源進到後端持久化
-
-解決: "搶到","沒搶到":只讓搶到的進到後端
-未解決: 同時大量 "搶到" 進到 JAVA 會爆
-
-初始化票API: <br />
-http://localhost/init-ticket
-
-搶票API: <br />
-http://localhost/book-ticket
-
-核對 Count API: <br />
-http://localhost:8080/ticket/nginx/getCountTicket
-
-測試: <br />
-ResourceRob/src/main/java/org/example/lockproject/test/TicketNginxBookingSystem.java
 
 ## N台後端服務 + Nginx + RabbitMQ：
 ![image](https://github.com/lzz0826/ResourceRob/blob/main/imgs/004.png)
@@ -69,12 +28,12 @@ ResourceRob/src/main/java/org/example/lockproject/test/TicketNginxBookingSystem.
 - 接收請求階段: 接收一個請求時，將write_point原子性自增1，將返回的, 已經更新過的write_point值作為存放當前request data的key, 存放到Share Dict中.
 - Timer運行階段: Timer啟動后, 讀取write_point和read_point, 如果發現read_point < write_point, 開啟flush階段, 不斷自增read_point, 將新的read_point值作為key, 從Share Dict取出data, 發送到rabbitmq中, 直到read_point = write_point, 此次flush工作結束.
 
-
+##### Nginx 服務API
 初始化票API: <br />
 http://localhost/initNginx-ticket?area=nginxQA&count=500 <br />
 http://localhost/initNginx-ticket?area=nginxQB&count=500  <br />
 
-添加票(以初始化好的票再添加)API: <br />
+補票&添加票API GET: (以初始化好的票再添加)API: <br />
 http://localhost/addTicketNginx-ticket?area=nginxQA&addQuantity=100 <br />
 
 消費資源API Post: <br />
@@ -82,11 +41,40 @@ curl -X POST http://172.24.10.37/bookNginx-ticket \
 -H "Content-Type: application/json" \
 -d '{"userId": "user001", "area": "nginxQA"}'
 
+搶票API CURL: <br />
 curl -X POST http://172.24.10.199/bookNginx-ticket -H "Content-Type: application/json" -d '{"userId": "user001", "area": "nginxQA", "ticketName": "standard"}'
 
+<br />
 接收請求階段: 接收一個請求時，將write_point原子性自增1，將返回的, 已經更新過的write_point值作為存放當前request data的key, 存放到Share Dict中.
 
 Timer運行階段: Timer啟動后, 讀取write_point和read_point, 如果發現read_point<write_point, 開啟flush階段, 不斷自增read_point, 將新的read_point值作為key, 從Share Dict取出data, 發送到rabbitmq中, 直到read_point=write_point, 此次flush工作結束.
+
+##### JAVA 服務API
+
+查詢票 CURL: <br />
+curl --location 'http://localhost:8080/ticket/nginx/checkoutTicket/user001'
+
+付款 CURL:  <br />
+curl --location 'http://localhost:8080/ticket/nginx/checkoutTicketToken' \
+--header 'Content-Type: application/json' \
+--data '{
+    "ticketName" : "standard",
+    "userId" : "user001",
+    "area" : "nginxQA",
+    "ticketToken" : "ac33acf6b04ef21af1ccfdecf23882926d1afca7d6879e34abfdd2cf944f753d",
+    "bookTime" : "1742893981"
+}'
+
+檢查TicketToken是否過期 CURL:  <br />
+curl --location 'http://localhost:8080/ticket/nginx/ticketToPayed' \
+--header 'Content-Type: application/json' \
+--data '{
+    "ticketName" : "standard",
+    "userId" : "user001",
+    "area" : "nginxQA",
+    "ticketToken" : "1dbd5fb4e98286f155cbce9a6742ea7013d9495f71eac2858a86fca2c3d0eb05",
+    "bookTime" : "1743486316"
+}'
 
 ## 加密規則
 1. 簡介
@@ -113,8 +101,3 @@ data =  ticketName + userId + area + book_time  <br />
 簽名結果轉為十六進制字符串。
 
 4.簽名驗證
-
-
-------------------
-開票 -> 搶到 Redis 存(過期相當於付款時間) -> 到期 -> 檢查(DB 狀態) -> 有付 -> 不變  
-                                                            -> 沒付 -> 改DB狀態 -> 放回Nginx 
