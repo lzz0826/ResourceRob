@@ -1,7 +1,5 @@
 # ResourceRob 高併發搶票系統
 
-![image](https://github.com/lzz0826/ResourceRob/blob/main/imgs/Ticket.jpg)
-
 ## 核心概念包括：
 ### 核心問題 : 排除非必要請求到後段 , 解決同時大量請求 *每個服務之間調用要注意 原子性
 - Redis：Tokne過期通知 (資源放Redis) 。 <br />
